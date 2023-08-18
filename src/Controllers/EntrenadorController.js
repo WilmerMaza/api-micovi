@@ -1,10 +1,12 @@
 const { Router } = require("express");
 const router = Router();
-const EntrenadorService = require("../Services/EntrenadorService.js")
-const { verificationToken } = require("../Utils/validateToken.js")
+const EntrenadorService = require("../Services/EntrenadorService.js");
+const { verificationToken } = require("../Utils/validateToken.js");
 
-router.get("/getAll",verificationToken, async (req, res) => {
-  const {dataUser:{ID}} = req.user;
+router.get("/getAll", verificationToken, async (req, res) => {
+  const {
+    dataUser: { ID },
+  } = req.user;
   try {
     const Entrenador = await EntrenadorService.getAllEntrenador(ID);
     res.json(Entrenador);
@@ -13,16 +15,16 @@ router.get("/getAll",verificationToken, async (req, res) => {
   }
 });
 
-router.post('/create', async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
     const sportsMan = await EntrenadorService.createEntrenador(req);
     const response = {
-          Entrenador: sportsMan,
-          Menssage : "Registro Exitoso"
-    }
+      Entrenador: sportsMan,
+      Menssage: "Registro Exitoso",
+    };
     res.status(200).send(response);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el registro' ,mjs:error});
+    res.status(500).json({ error: "Error al crear el registro", mjs: error });
   }
 });
 
