@@ -46,16 +46,17 @@ router.get('/getAll', async (req, res) => {
   }
 });
 
-router.get('/get', async (req, res) => {
+router.post('/get', async (req, res) => {
   try {
-    const sportsMan = await sportsManService.getSportsMan(req.body.identification);
-    if (sportsMan) {
-      res.json(sportsMan);
+    const filters = req.body; // Obtener los filtros de la query string
+    const sportsMen = await sportsManService.getSportsMenWithFilters(filters);
+    if (sportsMen.length > 0) {
+      res.json(sportsMen);
     } else {
-      res.status(404).json({ message: 'deportista no encontrado' });
+      res.status(404).json({ message: 'Deportistas no encontrados' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener el registro' });
+    res.status(500).json({ error: 'Error al obtener los registros' });
   }
 });
 
