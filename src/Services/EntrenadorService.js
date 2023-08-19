@@ -6,7 +6,7 @@ const {
 } = require("../db.js");
 const { v1 } = require("uuid");
 const { AES, enc } = require("crypto-ts");
-const { Op, fn, col } = require("sequelize");
+const { Op } = require("sequelize");
 
 class EntrenadorService {
   async createEntrenador(data) {
