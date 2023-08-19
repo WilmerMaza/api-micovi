@@ -3,12 +3,9 @@ const router = Router();
 const EntrenadorService = require("../Services/EntrenadorService.js");
 const { verificationToken } = require("../Utils/validateToken.js");
 
-router.get("/getAll", verificationToken, async (req, res) => {
-  const {
-    dataUser: { ID },
-  } = req.user;
+router.post("/getAll", verificationToken, async (req, res) => {
   try {
-    const Entrenador = await EntrenadorService.getAllEntrenador(ID);
+    const Entrenador = await EntrenadorService.getAllEntrenador(req);
     res.json(Entrenador);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los registros" });
@@ -17,30 +14,36 @@ router.get("/getAll", verificationToken, async (req, res) => {
 
 router.post("/create", async (req, res) => {
   try {
-    const sportsMan = await EntrenadorService.createEntrenador(req);
+    await EntrenadorService.createEntrenador(req);
     const response = {
-      Entrenador: sportsMan,
-      Menssage: "Registro Exitoso",
+      Menssage: "Entrenador creado con éxito",
     };
     res.status(200).send(response);
   } catch (error) {
-    res.status(500).json({ error: "Error al crear el registro", mjs: error });
+    console.error("Error al crear el registro:", error);
+    res
+      .status(500)
+      .json({ error: "Error al crear el registro", mjs: error.message });
   }
 });
 
-// router.get("/get",verificationToken, async (req, res) => {
-//   try {
-//     const sportsMan = await sportsManService.getSportsMan(
-//       req.body.identification
-//     );
-//     if (sportsMan) {
-//       res.json(sportsMan);
-//     } else {
-//       res.status(404).json({ message: "deportista no encontrado" });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: "Error al obtener el registro" });
-//   }
-// });
+router.put("/update", verificationToken, async (req, res) => {
+  try {
+    const Entrenador = await EntrenadorService.updateEntrenador(req);
+    if (Entrenador) {
+      const response = {
+        Menssage: "Registro Actualizado Exitosamente",
+      };
+      res.status(200).send(response);
+    } else {
+      res.status(404).json({ error: "El registro no fue encontrado" });
+    }
+  } catch (error) {
+    console.error("Error al actualizar el registro:", error);
+    res
+      .status(500)
+      .json({ error: "Error al actualizar el registro", mjs: error.message });
+  }
+});
 
 module.exports = router;

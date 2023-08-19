@@ -5,24 +5,27 @@ const {
   TableLogins,
 } = require("../db.js");
 const { v1 } = require("uuid");
-const { AES, enc } = require('crypto-ts');
+const { AES, enc } = require("crypto-ts");
+const { Op, fn, col } = require("sequelize");
 
 class EntrenadorService {
   async createEntrenador(data) {
-    const {
-      body: { identification, password },
-      user: {
-        dataUser: { institutionName },
-      },
-    } = data;
+    try {
+      const {
+        body: { identification, password },
+        user: {
+          dataUser: { institutionName },
+        },
+      } = data;
 
-    const { SECRETKEY } = process.env
-    const pass = AES.decrypt(password, enc.Utf8.parse(SECRETKEY)).toString(enc.Utf8);
+      const { SECRETKEY } = process.env;
+      const pass = AES.decrypt(password, enc.Utf8.parse(SECRETKEY)).toString(
+        enc.Utf8
+      );
 
-    const res = await this.getEntrenador(identification);
+      const res = await this.getEntrenador(identification);
 
-    if (!res) {
-      try {
+      if (!res) {
         data.body.ID = v1();
         const institution = await this.getInstitucion(institutionName);
         const {
@@ -34,31 +37,95 @@ class EntrenadorService {
 
         const entrenadors = await Entrenador.create(bodyRequest);
 
-        const rollSetting = await RollSettings.create({
-          ID: v1(),
-          SportsInstitutionID: entrenadors.SportsInstitutionID,
-          account: "Entrenador",
-          usuario: entrenadors.ID,
-        });
+        let rollSetting;
+        try {
+          rollSetting = await RollSettings.create({
+            ID: v1(),
+            SportsInstitutionID: entrenadors.SportsInstitutionID,
+            account: "Entrenador",
+            usuario: entrenadors.ID,
+          });
+        } catch (error) {
+          console.error("Error al crear 'Roll':", error);
+          throw error;
+        }
 
-        await TableLogins.create({
-          ID: v1(),
-          user: entrenadors.email,
-          password: pass,
-          RollSettingID: rollSetting.ID,
-        });
-      } catch (error) {
-        return error;
+        try {
+          await TableLogins.create({
+            ID: v1(),
+            user: entrenadors.email,
+            password: pass,
+            RollSettingID: rollSetting.ID,
+          });
+        } catch (error) {
+          console.error("Error al crear 'Usuario Login':", error);
+          throw error;
+        }
+      } else {
+        throw new Error("El Entrenador ya ha sido registrado anteriormente");
       }
-    } else {
-      return "El Entrenador ya ha sido registrado anteriormente";
+    } catch (error) {
+      console.error("Error al crear el registro:", error);
+      throw error;
     }
   }
 
-  async getAllEntrenador(SportsInstitutionID) {
-    return await Entrenador.findAll({
-      where: { SportsInstitutionID: SportsInstitutionID },
-    });
+  async getAllEntrenador(request) {
+    try {
+      const {
+        body: { name, identification },
+        user: {
+          dataUser: { ID },
+        },
+      } = request;
+
+      const SportsInstitutionID = ID;
+
+      const whereClause = { SportsInstitutionID };
+
+      if (identification) {
+        whereClause.identification = identification;
+      }
+
+      if (name) {
+        whereClause.name = {
+          [Op.iLike]: `%${name}%`
+        };
+      }
+
+      return await Entrenador.findAll({
+        where: whereClause,
+      });
+    } catch (error) {
+      console.error("Error al obtener los entrenadores:", error);
+      throw error;
+    }
+  }
+
+  async updateEntrenador(dataUpdate) {
+    const {
+      body,
+      user: {
+        dataUser: { ID },
+      },
+    } = dataUpdate;
+
+    try {
+      const rowsUpdated = await Entrenador.update(body, {
+        where: { identification: body.identification, SportsInstitutionID: ID },
+        returning: true,
+      });
+
+      if (rowsUpdated[0] === 0) {
+        // No se actualizó ningún registro
+        return null;
+      }
+
+      return "Entrenador actualizado con éxito";
+    } catch (error) {
+      console.error("Error al actualizar el entrenador:", error);
+      throw error;
+    }
   }
 
   async getEntrenador(identification) {
@@ -72,21 +139,6 @@ class EntrenadorService {
       where: { institutionName: institutionName },
     });
   }
-
-  // async updateSportsMan(data) {
-  //   const [rowsUpdated, [updatedSportsMan]] = await SportsMan.update(data.data, {
-  //     where: { ID: data.ID },
-  //     returning: true,
-  //   });
-  //   return rowsUpdated === 0 ? null : updatedSportsMan;
-  // }
-
-  // async deleteSportsMan(id) {
-  //   const rowsDeleted = await SportsMan.destroy({
-  //     where: { ID: id },
-  //   });
-  //   return rowsDeleted === 0 ? false : true;
-  // }
 }
 
 module.exports = new EntrenadorService();
