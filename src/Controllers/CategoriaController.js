@@ -1,12 +1,12 @@
 const { Router } = require("express");
 const router = Router();
-const EntrenadorService = require("../Services/EntrenadorService.js");
+const CategoriaService = require("../Services/CategoriaService.js");
 const { verificationToken } = require("../Utils/validateToken.js");
 
-router.post("/getAll", verificationToken, async (req, res) => {
+router.get("/getAll", verificationToken, async (req, res) => {
   try {
-    const Entrenador = await EntrenadorService.getAllEntrenador(req);
-    res.json(Entrenador);
+    const Categoria = await CategoriaService.getAllCategoria(req);
+    res.json(Categoria);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los registros" });
   }
@@ -14,9 +14,9 @@ router.post("/getAll", verificationToken, async (req, res) => {
 
 router.post("/create",verificationToken, async (req, res) => {
   try {
-    await EntrenadorService.createEntrenador(req);
+    await CategoriaService.createCategoria(req);
     const response = {
-      Menssage: "Entrenador creado con éxito",
+      Menssage: "Categoria creada con éxito",
     };
     res.status(200).send(response);
   } catch (error) {
@@ -29,8 +29,8 @@ router.post("/create",verificationToken, async (req, res) => {
 
 router.put("/update", verificationToken, async (req, res) => {
   try {
-    const Entrenador = await EntrenadorService.updateEntrenador(req);
-    if (Entrenador) {
+    const Categoria = await CategoriaService.updateCategoria(req);
+    if (Categoria) {
       const response = {
         Menssage: "Registro Actualizado Exitosamente",
       };
