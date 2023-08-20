@@ -1,5 +1,6 @@
 const { SportsMan } = require("../db.js")
 const { v1 } = require('uuid');
+const { Op } = require('sequelize');
 
 class SportsManService {
   async createSportsMan(data) {
@@ -17,10 +18,26 @@ class SportsManService {
     return await SportsMan.findAll();
   }
 
-  async getSportsMan(identification) {
-    return await SportsMan.findOne ({
-      where: { identification: identification }
-    });
+  async getSportsMenWithFilters(filters) {
+    const query = {
+      where: {}
+    };
+  
+    if (filters.category && filters.category.length > 0) {
+      query.where.category = { [Op.in]: filters.category };
+    }
+  
+    if (filters.gender && filters.gender.length > 0) {
+      query.where.gender = { [Op.in]: filters.gender };
+    }
+  
+    if (filters.typeIdentification && filters.typeIdentification.length > 0) {
+      query.where.typeIdentification = { [Op.in]: filters.typeIdentification };
+    }
+  
+    const sportsMen = await SportsMan.findAll(query);
+  
+    return sportsMen;
   }
 
   async updateSportsMan(data) {
