@@ -6,6 +6,7 @@ const HomeRoutes = require("./Controllers/HomeController.js");
 const RoutesPayment = require("./Controllers/PagoController.js");
 const SportManRouter = require("./Controllers/SportManController.js");
 const EntrenadorRouter = require("./Controllers/EntrenadorController.js");
+const CategoriaRouter = require("./Controllers/CategoriaController.js");
 
 
 const router = Router();
@@ -16,6 +17,7 @@ router.use("/payment", RoutesPayment)
 router.use("/home", HomeRoutes);
 router.use("/sportMan", SportManRouter);
 router.use("/Entrenador", EntrenadorRouter);
+router.use("/Categoria", CategoriaRouter);
 
 
 
