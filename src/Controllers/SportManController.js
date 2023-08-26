@@ -1,8 +1,9 @@
 const { Router } = require('express');
 const router = Router();
 const sportsManService = require('../Services/SportManService.js');
+const { verificationToken } = require("../Utils/validateToken.js");
 
-router.post('/update', async (req, res) => {
+router.post('/update', verificationToken, async (req, res) => {
   try {
     const updatedSportsMan = await sportsManService.updateSportsMan(req.body);
     if (updatedSportsMan) {
@@ -15,7 +16,7 @@ router.post('/update', async (req, res) => {
   }
 });
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', verificationToken, async (req, res) => {
   try {
     const result = await sportsManService.deleteSportsMan(req.body.ID);
     if (result) {
@@ -28,16 +29,16 @@ router.post('/delete', async (req, res) => {
   }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', verificationToken, async (req, res) => {
   try {
-    const sportsMan = await sportsManService.createSportsMan(req.body);
+    const sportsMan = await sportsManService.createSportsMan(req);
     res.status(201).json(sportsMan);
   } catch (error) {
     res.status(500).json({ error: 'Error al crear el registro' });
   }
 });
 
-router.get('/getAll', async (req, res) => {
+router.get('/getAll', verificationToken, async (req, res) => {
   try {
     const sportsMen = await sportsManService.getAllSportsMen();
     res.json(sportsMen);
@@ -46,7 +47,7 @@ router.get('/getAll', async (req, res) => {
   }
 });
 
-router.post('/get', async (req, res) => {
+router.post('/get', verificationToken, async (req, res) => {
   try {
     const filters = req.body; // Obtener los filtros de la query string
     const sportsMen = await sportsManService.getSportsMenWithFilters(filters);
@@ -59,5 +60,20 @@ router.post('/get', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los registros' });
   }
 });
+
+router.post('/getHistorialCategory', verificationToken, async (req, res) => {
+  try {
+    const filters = req; 
+    const historialSportman = await sportsManService.getHistorialCategory(filters);
+    if (historialSportman.length > 0) {
+      res.json(historialSportman);
+    } else {
+      res.status(404).json({ message: 'Deportistas no encontrados' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los registros' });
+  }
+});
+
 
 module.exports = router;

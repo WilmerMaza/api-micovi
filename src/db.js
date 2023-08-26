@@ -100,6 +100,9 @@ HistorialCategorico.belongsTo(Categoria);
 SportsMan.hasMany(HistorialCategorico);
 HistorialCategorico.belongsTo(SportsMan);
 
+SportsInstitutions.hasMany(SportsMan);
+SportsMan.belongsTo(SportsInstitutions);
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
