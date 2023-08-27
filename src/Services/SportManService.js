@@ -1,18 +1,40 @@
-const { SportsMan } = require("../db.js")
+const { SportsMan, SportsInstitutions, HistorialCategorico,
+Categoria} = require("../db.js")
 const { v1 } = require('uuid');
 const { Op } = require('sequelize');
+const { AES, enc } = require("crypto-ts");
 
 class SportsManService {
   async createSportsMan(data) {
-    const res = await this.getSportsMan(data.identification)
+    try {
+    const {
+      body: { identification },
+      user: {
+        dataUser: { institutionName },
+      },
+    } = data;
+
+    const res = await this.getSportsMan(identification)
     if (!res) {
-      data.ID = v1();
-      return await SportsMan.create(data);
+      data.body.ID = v1();
+      const institution = await this.getInstitucion(institutionName);
+      const {
+        dataValues: { ID },
+      } = institution;
+
+      const bodyRequest = data.body;
+      bodyRequest.SportsInstitutionID = ID;
+
+      return await SportsMan.create(bodyRequest);
     }
     else {
       return "El deportista ya ha sido registrado anteriormente"
     }
+  } catch (error) {
+    console.error("Error al crear el registro:", error);
+    throw error;
   }
+}
 
   async getAllSportsMen() {
     return await SportsMan.findAll();
@@ -54,6 +76,45 @@ class SportsManService {
     });
     return rowsDeleted === 0 ? false : true;
   }
+
+  async getInstitucion(institutionName) {
+    return await SportsInstitutions.findOne({
+      where: { institutionName: institutionName },
+    });
+  }
+  async getSportsMan(identification) {
+    return await SportsMan.findOne({
+      where: { identification: identification },
+    });
+  }
+
+  async getHistorialCategory(idCsportsman){
+    const {
+      body: { id }
+    } = idCsportsman;
+  
+    const historiales = await HistorialCategorico.findAll({
+      where: { SportsManID: id },
+    });
+  
+    const historialesConNombres = await Promise.all(
+      historiales.map(async (historial) => {
+        const categoria = await Categoria.findOne({
+          where: { ID : historial.CategoriumID },
+        });
+  
+        const categoryName = categoria ? categoria.name : null;
+  
+        return {
+          ...historial.toJSON(),
+          categoryName: categoryName,
+        };
+      })
+    );
+  
+    return historialesConNombres;
+  }
+  
 }
 
 module.exports = new SportsManService();
