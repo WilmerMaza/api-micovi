@@ -24,8 +24,15 @@ class SportsManService {
 
       const bodyRequest = data.body;
       bodyRequest.SportsInstitutionID = ID;
+      const deportis = await SportsMan.create(bodyRequest);
+        await HistorialCategorico.create({
+        SportsManID: data.body.ID,       
+        CategoriumID: data.body.CategoriumID,                   
+        FechaInicio: new Date(),             
+        FechaFin: new Date(),               
+      });
 
-      return await SportsMan.create(bodyRequest);
+      return "ok";
     }
     else {
       return "El deportista ya ha sido registrado anteriormente"
