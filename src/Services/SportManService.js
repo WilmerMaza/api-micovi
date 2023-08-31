@@ -52,6 +52,10 @@ class SportsManService {
       where: {}
     };
   
+    if (filters.Name) {
+      query.where.name = { [Op.like]: `%${filters.Name}%` };
+    }
+    
     if (filters.category && filters.category.length > 0) {
       query.where.category = { [Op.in]: filters.category };
     }
@@ -69,13 +73,43 @@ class SportsManService {
     return sportsMen;
   }
 
-  async updateSportsMan(data) {
-    const [rowsUpdated, [updatedSportsMan]] = await SportsMan.update(data.data, {
-      where: { ID: data.ID },
-      returning: true,
-    });
-    return rowsUpdated === 0 ? null : updatedSportsMan;
+async  updateSportsMan(data) {
+  const existingSportsMan = await SportsMan.findByPk(data.ID);
+
+  if (!existingSportsMan) {
+    return null; // Deportista no encontrado
   }
+
+  // Comparar los cambios
+  const changes = {};
+  const categoryChanged = existingSportsMan.category !== data.category;
+  
+  if (categoryChanged) {
+    // Actualizar fecha de finalización en la categoría anterior
+    await HistorialCategorico.update(
+      { FechaFin: new Date() },
+      { where: { SportsManID: data.ID, CategoriumID: data.CategoriumID } }
+    );
+
+    // Insertar nuevo registro en HistorialCategoricos
+    await HistorialCategorico.create({
+      FechaInicio: new Date(),
+      FechaFin: new Date(),
+      CategoriumID: existingSportsMan.CategoriumID,
+      SportsManID: data.ID,
+    });
+
+    changes.category = data.category;
+  }
+
+  // Actualizar datos del deportista
+  const [rowsUpdated, [updatedSportsMan]] = await SportsMan.update(data, {
+    where: { ID: data.ID },
+    returning: true,
+  });
+
+  return rowsUpdated === 0 ? null : { ...updatedSportsMan.get(), changes };
+}
 
   async deleteSportsMan(id) {
     const rowsDeleted = await SportsMan.destroy({
