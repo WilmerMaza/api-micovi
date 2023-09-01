@@ -7,12 +7,16 @@ router.post('/update', verificationToken, async (req, res) => {
   try {
     const updatedSportsMan = await sportsManService.updateSportsMan(req.body);
     if (updatedSportsMan) {
-      res.json(updatedSportsMan);
+      const response = {
+        Menssage: "Registro Actualizado Exitosamente",
+      };
+      res.status(200).send(response);
     } else {
-      res.status(404).json({ message: 'deportista no encontrado' });
+      res.status(404).json({ message: 'Deportista no encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar el registro' });
+    console.error("Error al actualizar el deportista:", error);
+    res.status(500).json({ error: 'Error al actualizar el deportista', message: error.message });
   }
 });
 
@@ -20,21 +24,26 @@ router.post('/delete', verificationToken, async (req, res) => {
   try {
     const result = await sportsManService.deleteSportsMan(req.body.ID);
     if (result) {
-      res.status(204).json({ message: 'deportista eliminado con éxito' });
+      res.status(204).json({ message: 'Deportista eliminado con éxito' });
     } else {
-      res.status(404).json({ message: 'deportista no encontrado' });
+      res.status(404).json({ message: 'Deportista no encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar el registro' });
+    console.error("Error al eliminar el deportista:", error);
+    res.status(500).json({ error: 'Error al eliminar el deportista', message: error.message });
   }
 });
 
 router.post('/create', verificationToken, async (req, res) => {
   try {
     const sportsMan = await sportsManService.createSportsMan(req);
-    res.status(201).json(sportsMan);
+    const response = {
+      Menssage: "Deportista creado con éxito",
+    };
+    res.status(200).send(response);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el registro' });
+    console.error("Error al crear el deportista:", error);
+    res.status(500).json({ error: 'Error al crear el deportista', message: error.message });
   }
 });
 
@@ -43,13 +52,14 @@ router.get('/getAll', verificationToken, async (req, res) => {
     const sportsMen = await sportsManService.getAllSportsMen();
     res.json(sportsMen);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los registros' });
+    console.error("Error al obtener los deportistas:", error);
+    res.status(500).json({ error: 'Error al obtener los deportistas', message: error.message });
   }
 });
 
 router.post('/get', verificationToken, async (req, res) => {
   try {
-    const filters = req.body; // Obtener los filtros de la query string
+    const filters = req.body; // Obtener los filtros de la solicitud
     const sportsMen = await sportsManService.getSportsMenWithFilters(filters);
     if (sportsMen.length > 0) {
       res.json(sportsMen);
@@ -57,7 +67,8 @@ router.post('/get', verificationToken, async (req, res) => {
       res.status(404).json({ message: 'Deportistas no encontrados' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los registros' });
+    console.error("Error al obtener los deportistas:", error);
+    res.status(500).json({ error: 'Error al obtener los deportistas', message: error.message });
   }
 });
 
@@ -68,12 +79,12 @@ router.post('/getHistorialCategory', verificationToken, async (req, res) => {
     if (historialSportman.length > 0) {
       res.json(historialSportman);
     } else {
-      res.status(404).json({ message: 'Deportistas no encontrados' });
+      res.status(404).json({ message: 'Historial de deportistas no encontrado' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los registros' });
+    console.error("Error al obtener el historial de deportistas:", error);
+    res.status(500).json({ error: 'Error al obtener el historial de deportistas', message: error.message });
   }
 });
-
 
 module.exports = router;
