@@ -78,6 +78,23 @@ class CategoriaService {
     });
   }
 
+  async getAllCategoriaByCoach(request) {
+    try {
+      const {
+        user: {
+          dataUser: { SportsInstitutionID },
+        },
+      } = request;
+
+      return await Categoria.findAll({
+        where: { SportsInstitutionID },
+      });
+    } catch (error) {
+      console.error("Error al obtener las Categorias:", error);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = new CategoriaService();

@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { verificationToken } = require("./Utils/validateToken.js");
 
 const LoginRoutes = require("./Controllers/LoginController.js");
 const RegisterRoutes = require("./Controllers/RegisterController.js");
@@ -13,8 +14,8 @@ const router = Router();
 
 router.use("/login", LoginRoutes);
 router.use("/register", RegisterRoutes);
-router.use("/payment", RoutesPayment)
-router.use("/home", HomeRoutes);
+router.use("/payment", RoutesPayment);
+router.use("/home", verificationToken, HomeRoutes);
 router.use("/sportMan", SportManRouter);
 router.use("/Entrenador", EntrenadorRouter);
 router.use("/Categoria", CategoriaRouter);
