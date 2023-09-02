@@ -46,4 +46,14 @@ router.put("/update", verificationToken, async (req, res) => {
   }
 });
 
+
+router.post("/getAllByCoach", verificationToken, async (req, res) => {
+  try {
+    const Categoria = await CategoriaService.getAllCategoriaByCoach(req);
+    res.json(Categoria);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los registros" });
+  }
+});
+
 module.exports = router;

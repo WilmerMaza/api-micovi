@@ -76,6 +76,7 @@ const {
   HistorialCategorico,
   Categoria,
   SportsMan,
+  PlanAnual
 } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -102,6 +103,12 @@ HistorialCategorico.belongsTo(SportsMan);
 
 SportsInstitutions.hasMany(SportsMan);
 SportsMan.belongsTo(SportsInstitutions);
+
+Entrenador.hasMany(PlanAnual);
+PlanAnual.belongsTo(Entrenador);
+
+Categoria.hasMany(PlanAnual);
+PlanAnual.belongsTo(Categoria);
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

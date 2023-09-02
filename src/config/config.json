@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "Greiver_2306",
+    "database": "micovidb",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
