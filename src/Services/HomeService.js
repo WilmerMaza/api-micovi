@@ -63,8 +63,23 @@ const getAllAnualPlan = async (req, res) => {
     })
 }
 
+const getPlanById = async (req, res) => {
+    try {
+        const ID  = req.query.documentId;
+        const data = await PlanAnual.findByPk(ID,{
+            include:{
+                model: Categoria
+            }
+        });
+        res.status(200).send({item: data})
+    } catch (error) {
+        res.status(500).send({msg: 'A database error occurred', error})
+    }
+}
+
 module.exports = {
     dataUserPlan_function, 
     insertAnnuelPlan,
-    getAllAnualPlan
+    getAllAnualPlan,
+    getPlanById
 }
