@@ -65,8 +65,8 @@ const getAllAnualPlan = async (req, res) => {
 
 const getPlanById = async (req, res) => {
     try {
-        const ID  = req.query.documentId;
-        const data = await PlanAnual.findByPk(ID,{
+        const { documentId } = req.query;
+        const data = await PlanAnual.findByPk(documentId,{
             include:{
                 model: Categoria
             }
