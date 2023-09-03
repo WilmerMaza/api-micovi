@@ -8,7 +8,7 @@ router.post('/update', verificationToken, async (req, res) => {
     const updatedSportsMan = await sportsManService.updateSportsMan(req.body);
     if (updatedSportsMan) {
       const response = {
-        Menssage: "Registro Actualizado Exitosamente",
+        Message: "Registro Actualizado Exitosamente",
       };
       res.status(200).send(response);
     } else {
@@ -38,7 +38,7 @@ router.post('/create', verificationToken, async (req, res) => {
   try {
     const sportsMan = await sportsManService.createSportsMan(req);
     const response = {
-      Menssage: "Deportista creado con éxito",
+      Message: "Deportista creado con éxito",
     };
     res.status(200).send(response);
   } catch (error) {
