@@ -104,7 +104,7 @@ class SportsManService {
         await HistorialCategorico.create({
           FechaInicio: new Date(),
           FechaFin: new Date(),
-          CategoriumID: existingSportsMan.CategoriumID,
+          CategoriumID: data.CategoriumID,
           SportsManID: data.ID,
         });
 
