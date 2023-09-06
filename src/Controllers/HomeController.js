@@ -1,7 +1,15 @@
 const { Router } = require('express');
 const jwt = require('jsonwebtoken')
 require('dotenv').config({path: '../../.env'});
-const { dataUserPlan_function, insertAnnuelPlan, getAllAnualPlan, getPlanById } = require("../Services/HomeService.js")
+const { 
+    dataUserPlan_function, 
+    insertAnnuelPlan, 
+    getAllAnualPlan, 
+    getPlanById, 
+    getAllMacros, 
+    insertMacro,
+    updateMacro
+} = require("../Services/HomeService.js")
 
 const { JWT_STRING } = process.env;
 const router = Router();
@@ -28,6 +36,15 @@ router.post('/annualPlan', insertAnnuelPlan);
 router.get('/getAllAnnualPlan', getAllAnualPlan);
 
 //get one annual plan by id
-router.get("/getAnnualPlanById", getPlanById)
+router.get("/getAnnualPlanById", getPlanById);
+
+//get all macrociclos by FK
+router.get("/getAllMacrociclos", getAllMacros);
+
+//insert macrociclo
+router.post("/postInsertMacro", insertMacro);
+
+//updating macrocycle
+router.post("/updateMacrocycle", updateMacro);
 
 module.exports = router;
