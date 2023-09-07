@@ -9,20 +9,18 @@ class SportsManService {
       const {
         body: { identification },
         user: {
-          dataUser: { institutionName },
+          dataUser:{ID,SportsInstitutionID },
         },
       } = data;
+
+      const IDSearch = SportsInstitutionID === undefined?ID:SportsInstitutionID;
 
       const res = await this.getSportsMan(identification);
       if (!res) {
         data.body.ID = v1();
-        const institution = await this.getInstitucion(institutionName);
-        const {
-          dataValues: { ID },
-        } = institution;
 
         const bodyRequest = data.body;
-        bodyRequest.SportsInstitutionID = ID;
+        bodyRequest.SportsInstitutionID = IDSearch;
         const deportis = await SportsMan.create(bodyRequest);
         await HistorialCategorico.create({
           SportsManID: data.body.ID,
@@ -41,19 +39,35 @@ class SportsManService {
     }
   }
 
-  async getAllSportsMen() {
+  async getAllSportsMen(req) {
     try {
-      return await SportsMan.findAll();
+      const { dataUser: { ID, SportsInstitutionID } } = req.user;
+      const IDSearch = SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+  
+      const sportsMen = await SportsMan.findAll({
+        where: {
+          SportsInstitutionID: IDSearch
+        }
+      });
+  
+      return sportsMen;
     } catch (error) {
       console.error("Error al obtener todos los deportistas:", error);
       throw error;
     }
   }
 
-  async getSportsMenWithFilters(filters) {
+  async getSportsMenWithFilters(req) {
     try {
+
+      const {dataUser: { ID, SportsInstitutionID } } = req.user;
+      const { body : filters } = req
+      const IDSearch = SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+
       const query = {
-        where: {}
+        where: {
+          SportsInstitutionID: IDSearch
+        }
       };
 
       if (filters.Name) {
@@ -145,16 +159,6 @@ class SportsManService {
     }
   }
 
-  async getInstitucion(institutionName) {
-    try {
-      return await SportsInstitutions.findOne({
-        where: { institutionName: institutionName },
-      });
-    } catch (error) {
-      console.error("Error al obtener la institución:", error);
-      throw error;
-    }
-  }
 
   async getSportsMan(identification) {
     try {
