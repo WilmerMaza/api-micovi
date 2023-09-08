@@ -31,14 +31,12 @@ class CategoriaService {
 
   async getAllCategoria(request) {
     try {
-      const {
-        user: {
-          dataUser: { ID },
-        },
-      } = request;
+    
+      const { dataUser:{ID,SportsInstitutionID }} = request.user;
+      const IDSearch = SportsInstitutionID === undefined?ID:SportsInstitutionID;
 
       return await Categoria.findAll({
-        where: { SportsInstitutionID: ID },
+        where: { SportsInstitutionID: IDSearch },
       });
     } catch (error) {
       console.error("Error al obtener las Categorias:", error);

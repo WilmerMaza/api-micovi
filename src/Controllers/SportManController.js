@@ -49,7 +49,7 @@ router.post('/create', verificationToken, async (req, res) => {
 
 router.get('/getAll', verificationToken, async (req, res) => {
   try {
-    const sportsMen = await sportsManService.getAllSportsMen();
+    const sportsMen = await sportsManService.getAllSportsMen(req);
     res.json(sportsMen);
   } catch (error) {
     console.error("Error al obtener los deportistas:", error);
@@ -59,8 +59,8 @@ router.get('/getAll', verificationToken, async (req, res) => {
 
 router.post('/get', verificationToken, async (req, res) => {
   try {
-    const filters = req.body; // Obtener los filtros de la solicitud
-    const sportsMen = await sportsManService.getSportsMenWithFilters(filters);
+
+    const sportsMen = await sportsManService.getSportsMenWithFilters(req);
     if (sportsMen.length > 0) {
       res.json(sportsMen);
     } else {
