@@ -176,32 +176,33 @@ class SportsManService {
       const {
         body: { id }
       } = idCsportsman;
-
+  
       const historiales = await HistorialCategorico.findAll({
         where: { SportsManID: id },
+        order: [['createdAt', 'DESC']], // Ordenar por la columna 'createdAt' en orden descendente
       });
-
+  
       const historialesConNombres = await Promise.all(
         historiales.map(async (historial) => {
           const categoria = await Categoria.findOne({
             where: { ID: historial.CategoriumID },
           });
-
+  
           const categoryName = categoria ? categoria.name : null;
-
+  
           return {
             ...historial.toJSON(),
             categoryName: categoryName,
           };
         })
       );
-
+  
       return historialesConNombres;
     } catch (error) {
       console.error("Error al obtener el historial de categorías:", error);
       throw error;
     }
-  }
+  }  
 }
 
 module.exports = new SportsManService();
