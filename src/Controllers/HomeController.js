@@ -8,7 +8,8 @@ const {
     getPlanById, 
     getAllMacros, 
     insertMacro,
-    updateMacro
+    updateMacro,
+    getAllMicroCiclo
 } = require("../Services/HomeService.js")
 
 const { JWT_STRING } = process.env;
@@ -46,5 +47,7 @@ router.post("/postInsertMacro", insertMacro);
 
 //updating macrocycle
 router.post("/updateMacrocycle", updateMacro);
+
+router.get("/getAllMicro", getAllMicroCiclo);
 
 module.exports = router;
