@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
       } = dataBd.dataValues;
 
       dataUser = await user_function(usuario);
-
+      dataUser.dataValues["account"] = account;
     } else {
       const {
         RollSetting: {
@@ -36,10 +36,8 @@ router.post("/", async (req, res) => {
       } = dataBd.dataValues;
 
       dataUser = dataValues;
-
+      dataUser["account"] = account;
     }
-
-    dataUser.account = account;
 
     jwt.sign(
       { dataUser },
