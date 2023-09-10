@@ -74,6 +74,10 @@ class SportsManService {
         query.where.name = { [Op.like]: `%${filters.Name}%` };
       }
 
+      if (filters.identificacion) {
+        query.where.identification = { [Op.like]: `%${filters.identificacion}%` };
+      }
+
       if (filters.category && filters.category.length > 0) {
         query.where.category = { [Op.in]: filters.category };
       }
