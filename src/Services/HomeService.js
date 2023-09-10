@@ -148,8 +148,10 @@ const insertMicro = async (init, end, ID) => {
     
         let microcycleDuration = 7;
         let dateInit_Micro = new Date(dateInit_Macro);
+        let number_micro = 0;
     
         while(dateInit_Micro <= dateEnd_Macro) {
+            number_micro++
             const dateEnd_Micro = new Date(dateInit_Micro);
             let monthMicro = dateInit_Micro.getMonth();
             let monthMacro = dateEnd_Macro.getMonth();
@@ -162,6 +164,8 @@ const insertMicro = async (init, end, ID) => {
             dateEnd_Micro.setDate(dateEnd_Micro.getDate() + microcycleDuration - 1);
     
             await Microciclos.create({
+                ID: v1(),
+                number_micro,
                 month: obtenerNombreMes(dateInit_Micro),
                 date_initial: dateInit_Micro,
                 date_end: dateEnd_Micro,
