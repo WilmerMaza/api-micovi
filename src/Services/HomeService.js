@@ -159,7 +159,7 @@ const insertMicro = async (init, end, ID) => {
             let dayMacro = dateEnd_Macro.getDate();
 
             if ((monthMicro === monthMacro) && ( dayMacro - dayMicro < 7)) {
-                microcycleDuration = dateEnd_Macro.getDate() - dateInit_Micro.getDate();
+                microcycleDuration = dateEnd_Macro.getDate() - dateInit_Micro.getDate() + 1;
             }
             dateEnd_Micro.setDate(dateEnd_Micro.getDate() + microcycleDuration - 1);
     
