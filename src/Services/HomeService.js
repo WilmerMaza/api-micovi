@@ -53,7 +53,8 @@ const getAllAnualPlan = async (req, res) => {
                     where: {EntrenadorID: ID},
                     include:{
                         model: Categoria
-                    }
+                    },
+                    order:[['createdAt', 'DESC']]
                 });
                 res.status(200).send({item: data})
             } catch (error) {
@@ -82,7 +83,8 @@ const getAllMacros = async (req, res) => {
         const { planId } = req.query;
 
         const data = await Macrociclos.findAll({
-            where: {PlanAnualID : planId}
+            where: {PlanAnualID : planId},
+            order:[['createdAt', 'DESC']]
         });
 
         res.status(200).send({item: data});
@@ -144,11 +146,19 @@ const insertMicro = async (init, end, ID) => {
         const dateInit_Macro = new Date(init);
         const dateEnd_Macro = new Date(end);
     
-        const microcycleDuration = 7;
+        let microcycleDuration = 7;
         let dateInit_Micro = new Date(dateInit_Macro);
     
         while(dateInit_Micro <= dateEnd_Macro) {
             const dateEnd_Micro = new Date(dateInit_Micro);
+            let monthMicro = dateInit_Micro.getMonth();
+            let monthMacro = dateEnd_Macro.getMonth();
+            let dayMicro = dateInit_Micro.getDate();
+            let dayMacro = dateEnd_Macro.getDate();
+
+            if ((monthMicro === monthMacro) && ( dayMacro - dayMicro < 7)) {
+                microcycleDuration = dateEnd_Macro.getDate() - dateInit_Micro.getDate();
+            }
             dateEnd_Micro.setDate(dateEnd_Micro.getDate() + microcycleDuration - 1);
     
             await Microciclos.create({
@@ -159,7 +169,7 @@ const insertMicro = async (init, end, ID) => {
                 MacrocicloID: ID
             })
     
-            dateInit_Micro.setDate(dateInit_Micro.getDate() + microcycleDuration);
+            dateInit_Micro.setDate(dateInit_Micro.getDate() + 7);
         }
 
     } catch (error) {
