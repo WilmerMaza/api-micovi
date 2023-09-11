@@ -18,11 +18,11 @@ module.exports = (sequelize) => {
     },
     date_initial: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
     },
     date_end: {
         type: DataTypes.DATE,
-        allowNull: true,
+        allowNull: false,
     }
   });
 
