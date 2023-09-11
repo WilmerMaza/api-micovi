@@ -43,14 +43,15 @@ const insertAnnuelPlan = async (req, res) => {
 
 
 const getAllAnualPlan = async (req, res) => {
+    const { coachId } = req.query;
     jwt.verify(await req.token, JWT_STRING, async (error, authData) => {
         if(error){
             res.sendStatus(401);
         }else {
             try {
-                const { dataUser : {ID}} = authData;
+                const { dataUser : {ID, account}} = authData;
                 const data = await PlanAnual.findAll({
-                    where: {EntrenadorID: ID},
+                    where: {EntrenadorID: account !== 'Admin' ? ID : coachId},
                     include:{
                         model: Categoria
                     },
