@@ -69,7 +69,7 @@ const captureOrder = async (req, res) => {
         }
     })
     saveDataCompleted(email_address, account_id, account_status, token)
-    res.redirect('http://localhost:4200/home')
+    res.redirect('http://localhost:4200/')
 }
 
 const saveDataApproved = async (data, buyId) => {
