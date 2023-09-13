@@ -11,11 +11,15 @@ module.exports = (sequelize) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: false,
     },
-    year: {
+    date_initial: {
       type: DataTypes.DATE,
-      allowNull: true,
+      allowNull: false,
+    },
+    date_end: {
+      type: DataTypes.DATE,
+      allowNull: false,
     }
   });
 
