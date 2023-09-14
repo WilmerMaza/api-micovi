@@ -3,21 +3,36 @@ const { v1 } = require('uuid');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({path: '../../.env'});
 const { JWT_STRING } = process.env;
+const { Op } = require("sequelize");
 
 const dataUserPlan_function = async (req, res) => {
-        const { dataUser:{ID,SportsInstitutionID }} = req.user;
-        const sportPlan = SportsInstitutionID === undefined?ID:SportsInstitutionID;
+    const { dataUser: { ID, SportsInstitutionID } } = req.user;
+    const sportPlan = SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+
     try {
         const dataUserPlan = await PlanUserNames.findOne({
-            where: {SportsInstitutionID : sportPlan}
-        })
-        
-        res.status(200).send(dataUserPlan)
+            where: {
+                SportsInstitutionID: sportPlan,
+                process: 'COMPLETED',
+            }
+        });
+        if (dataUserPlan) {
+            if (dataUserPlan. process = 'COMPLETED') {
+            res.status(200).send({dataUserPlan: dataUserPlan,
+                                  statusPlan: 'COMPLETED'});
+            } else {
+            res.status(208).send({dataUserPlan: dataUserPlan,
+                                  statusPlan: 'INCOMPLETED'});
+        }
+        }
+        else{
+            res.status(208).send({dataUserPlan: dataUserPlan,
+                                statusPlan: 'No cuenta con un plan'});
+        }
     } catch (error) {
-        res.status(404).send({msg: "an error has occurred in the database"}, error)
+        res.status(500).send({ msg: "Ocurrió un error en la base de datos", error });
     }
-
-}
+};
 
 
 const insertAnnuelPlan = async (req, res) => {
