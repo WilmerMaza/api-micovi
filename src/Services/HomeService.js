@@ -14,16 +14,13 @@ const dataUserPlan_function = async (req, res) => {
             where: {
                 SportsInstitutionID: sportPlan,
                 process: 'COMPLETED',
-            }
+                account_status: 'VERIFIED'
+            },
+            order: [['createdAt', 'DESC']] 
         });
         if (dataUserPlan) {
-            if (dataUserPlan. process = 'COMPLETED') {
             res.status(200).send({dataUserPlan: dataUserPlan,
-                                  statusPlan: 'COMPLETED'});
-            } else {
-            res.status(208).send({dataUserPlan: dataUserPlan,
-                                  statusPlan: 'INCOMPLETED'});
-        }
+                                  statusPlan: 'Plan completado'});
         }
         else{
             res.status(208).send({dataUserPlan: dataUserPlan,
