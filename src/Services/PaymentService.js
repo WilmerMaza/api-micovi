@@ -2,7 +2,7 @@ const axios = require('axios');
 const { v1 } = require('uuid');
 const { conn } = require("../db.js")
 require('dotenv').config({path: '../../.env'});
-const { PAYPAL_API, PAYPAL_SECRET_KEY, PAYPAL_CLIENT_ID } = process.env;
+const { PAYPAL_API, PAYPAL_SECRET_KEY, PAYPAL_CLIENT_ID, REDIRECTION_LOCAL, THIS_URL } = process.env;
 const { PlanUserNames } = require('../db.js');
 const { formatDate } = require("../Utils/formatDate.js")
 
@@ -20,8 +20,8 @@ const createPayment = async (req, res) => {
             brand_name: 'MiCovi',
             landing_page: 'NO_PREFERENCE',
             user_action: 'PAY_NOW',
-            return_url: 'http://localhost:3002/payment/capture-payment',
-            cancel_url: 'http://localhost:4200/#/plans'
+            return_url: `${THIS_URL}payment/capture-payment`,
+            cancel_url: `${REDIRECTION_LOCAL}#/plans`
         }
     }
 
@@ -69,7 +69,7 @@ const captureOrder = async (req, res) => {
             }
         })
         await saveDataCompleted(email_address, account_id, account_status, token)
-        res.redirect('http://localhost:4200/#/home?newpay=true');
+        res.redirect(`${REDIRECTION_LOCAL}#/home?newpay=true`);
 
     } catch (error) {
         throw new Error(`${error}`);
