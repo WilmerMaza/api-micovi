@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
 
 router.get('/planes', async (req, resp) => {
     try {
-        const result = await conn.query('SELECT * FROM planes'); // Utiliza la conn directamente
+        const result = await conn.query("SELECT * FROM planes where planname <> 'PRUEBAS GRATIS'"); // Utiliza la conn directamente
         resp.status(200).json(result[1].rows);
     } catch (error) {
         resp.status(400).send({ msg: `error in the database when trying to bring the plans, ${error}`});

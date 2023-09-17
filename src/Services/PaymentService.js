@@ -21,7 +21,7 @@ const createPayment = async (req, res) => {
             landing_page: 'NO_PREFERENCE',
             user_action: 'PAY_NOW',
             return_url: 'http://localhost:3002/payment/capture-payment',
-            cancel_url: 'http://localhost:4200/plans'
+            cancel_url: 'http://localhost:4200/#/plans'
         }
     }
 
@@ -61,18 +61,23 @@ const createPayment = async (req, res) => {
 
 const captureOrder = async (req, res) => {
     const { token } = req.query;
+    try {
+        const {data: {payment_source: {paypal: {email_address, account_id, account_status}}}} = await axios.post(`${PAYPAL_API}/v2/checkout/orders/${token}/capture`, {}, {
+            auth: {
+                username: PAYPAL_CLIENT_ID,
+                password: PAYPAL_SECRET_KEY
+            }
+        })
+        await saveDataCompleted(email_address, account_id, account_status, token)
+        res.redirect('http://localhost:4200/#/home?newpay=true');
 
-    const {data: {payment_source: {paypal: {email_address, account_id, account_status}}}} = await axios.post(`${PAYPAL_API}/v2/checkout/orders/${token}/capture`, {}, {
-        auth: {
-            username: PAYPAL_CLIENT_ID,
-            password: PAYPAL_SECRET_KEY
-        }
-    })
-    saveDataCompleted(email_address, account_id, account_status, token)
-    res.redirect('http://localhost:4200/')
+    } catch (error) {
+        throw new Error(`${error}`);
+    }
+
 }
 
-const saveDataApproved = async (data, buyId) => {
+async function saveDataApproved(data, buyId){
     const { amount, currency, planName, userName, userId, characteristicsPlan } = data;
 
     try {
@@ -90,12 +95,12 @@ const saveDataApproved = async (data, buyId) => {
 
         console.log("Informacion Almacenada")
     } catch (error) {
-        console.error("La informacion no a sido almacenada en la base de datos", error);
+        throw new Error("La informacion no a sido almacenada en la base de datos", error);
     }
 
 }
 
-const saveDataCompleted = async (email_address, account_id, account_status, token) => {
+async function saveDataCompleted(email_address, account_id, account_status, token) {
 
     try {
 
@@ -125,7 +130,7 @@ const saveDataCompleted = async (email_address, account_id, account_status, toke
 
         console.log("Información Actualizada")
     } catch (error) {
-        console.error("La información no a sido actualizada en la base de datos", error);
+        throw new Error("La información no a sido actualizada en la base de datos", error);
     }
 
 }
