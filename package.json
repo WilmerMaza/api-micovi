@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -L",
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
     "test": "jest --detectOpenHandles",
     "grade": "jest --useStderr --detectOpenHandles --json --outputFile=./test/result.json"
   },
