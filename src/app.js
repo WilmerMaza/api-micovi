@@ -6,6 +6,7 @@ const routes = require('./routes.js');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({path: '../../.env'});
+const { conn } = require('./db.js');
 
 require('./db.js');
 
@@ -52,6 +53,12 @@ server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   const message = err.message || err;
   console.error(err);
   res.status(status).send(message);
+});
+
+server.listen(process.env.PORT || 3002, () => {
+  console.log("Server listening on port 3002!");
+  conn.sync({ force: false });
+
 });
 
 module.exports = server;
