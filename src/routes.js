@@ -19,7 +19,7 @@ router.use("/home", verificationToken, HomeRoutes);
 router.use("/sportMan", SportManRouter);
 router.use("/Entrenador", EntrenadorRouter);
 router.use("/Categoria", CategoriaRouter);
-router.use("/exercises", EjercicioRouter)
+router.use("/exercises", verificationToken, EjercicioRouter)
 
 
 router.use("*", (req, res) => {
