@@ -8,7 +8,7 @@ const RoutesPayment = require("./Controllers/PagoController.js");
 const SportManRouter = require("./Controllers/SportManController.js");
 const EntrenadorRouter = require("./Controllers/EntrenadorController.js");
 const CategoriaRouter = require("./Controllers/CategoriaController.js");
-
+const EjercicioRouter = require("./Controllers/EjercicioController.js");
 
 const router = Router();
 
@@ -19,7 +19,7 @@ router.use("/home", verificationToken, HomeRoutes);
 router.use("/sportMan", SportManRouter);
 router.use("/Entrenador", EntrenadorRouter);
 router.use("/Categoria", CategoriaRouter);
-
+router.use("/exercises", EjercicioRouter)
 
 
 router.use("*", (req, res) => {
