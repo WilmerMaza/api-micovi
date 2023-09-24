@@ -2,14 +2,18 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('PlanUserNames', 'nuevaColumna', {
-      type: Sequelize.STRING,
-      allowNull: true,
-      defaultValue: "soy nueva",
+    await queryInterface.addColumn('SubGrupos', 'EntrenadorID', {
+      type: Sequelize.UUID,
+      references: {
+        model: 'Entrenadors', 
+        key: 'ID',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('PlanUserNames', 'nuevaColumna');
-  }
+    await queryInterface.removeColumn('SubGrupos', 'EntrenadorID');
+  },
 };

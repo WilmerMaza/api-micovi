@@ -23,9 +23,18 @@ const getAllexercises = async (req, resp) => {
         }
 }
 
+const getAllSubGrupos = async (req, res) => {
+    const { coachId } = req.query;
+    try {
+        res.send({item: await SubGrupos.findAll({where:{EntrenadorID: coachId}})})
+    } catch (error) {
+        res.json({Error:`${error}`})
+    }
+}
 
     
 
 module.exports = {
-    getAllexercises
+    getAllexercises,
+    getAllSubGrupos
 }
