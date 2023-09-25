@@ -26,24 +26,6 @@ server.use((req, res, next) => {
   next();
 });
 
-
-server.use((req, res, next) => {
-  if (req.headers.authorization) {
-    const token = req.headers.authorization.split(' ')[1]; // Obtiene el token del encabezado Authorization
-    try {
-      const decodedToken =jwt.decode(token);
-      // const decodedToken = jwt.verify(token, JWT_STRING);
-      req.user = decodedToken; // Agrega el usuario decodificado al objeto req
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Autenticación fallida' });
-    }
-  }else{
-    next();
-  }
-  
-});
-
 server.use('/', routes);
 
 // Error catching endware.

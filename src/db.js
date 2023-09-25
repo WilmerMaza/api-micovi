@@ -86,7 +86,9 @@ const {
   Levels,
   UnitTypes,
   Unitsofmeasurements,
-  Patterns
+  Patterns,
+  TareasMicrociclo,
+  Tareas
 } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -152,6 +154,12 @@ Ejercicios.belongsTo(Entrenador);
 
 Entrenador.hasMany(SubGrupos);
 SubGrupos.belongsTo(Entrenador);
+
+Microciclos.belongsToMany(Tareas,{through:TareasMicrociclo});
+Tareas.belongsToMany(Microciclos,{through:TareasMicrociclo});
+
+Entrenador.hasMany(Tareas);
+Tareas.belongsTo(Entrenador);
 
 
 module.exports = {
