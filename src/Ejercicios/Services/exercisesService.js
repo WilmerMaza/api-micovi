@@ -63,11 +63,36 @@ const createSubGrupos = async (req, res) => {
         throw new Error(`Error al insertar el subgrupo, Error: ${error}`);
     }
 }
+
+const createExercise = async (req, res) => {
+    const { dataUser: { ID }} = req.user;
+
+    try {
+        await Ejercicios.create({
+            ID: v1(),
+            ...req.body,
+            EntrenadorID: ID
+        })
+        .then(() => {
+            res.send({
+                success: true,
+                msg: "El ejercicio se ha creado satisfactoriamente"
+            })
+        })
+    } catch (error) {
+        res.send({
+            success: false,
+            msg: error
+        })
+        throw new Error(`Error al insertar el ejercicio, Error: ${error}`);
+    }
+}
     
 
 module.exports = {
     getAllexercises,
     getAllSubGrupos,
     getAllGrupos,
-    createSubGrupos
+    createSubGrupos,
+    createExercise
 }
