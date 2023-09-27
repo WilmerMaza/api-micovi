@@ -31,6 +31,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    abreviatura: {
+      type: DataTypes.STRING,
+    },
     Description: { type: DataTypes.STRING },
   });
 
