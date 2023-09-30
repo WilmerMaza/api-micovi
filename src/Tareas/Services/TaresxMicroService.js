@@ -1,4 +1,4 @@
-const { TareasMicrociclo } = require("../../db.js");
+const { TareasMicrociclo, Tareas, Microciclos } = require("../../db.js");
 const { v1 } = require("uuid");
 
 class TaresxMicroService {
@@ -24,9 +24,18 @@ class TaresxMicroService {
 
   async getMicrocicloTask(idMicrociclo) {
     try {
-      return await TareasMicrociclo.findAll({
+      const tasks = await TareasMicrociclo.findAll({
         where: { MicrocicloID: idMicrociclo },
+        attributes: ['fechaInicio', 'fechaFin'], // Selecciona las columnas de TareasMicrociclo que deseas traer
+        include: [
+          {
+            model: Tareas,
+            attributes: ['name'], // Selecciona las columnas de Tareas que deseas traer
+          },
+        ],
       });
+  
+      return tasks;
     } catch (error) {
       throw new Error(error);
     }

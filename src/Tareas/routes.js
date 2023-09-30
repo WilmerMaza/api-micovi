@@ -5,7 +5,7 @@ const TareasxMicroController = require("./Controllers/TareasxMicroController");
 
 //tareas
 router.post("/create",TareasController.crearTareas);
-
+router.get("/getTareas",TareasController.getTareas);
 //Asignar Tareas Microciclos
 
 router.post("/assignTasks",TareasxMicroController.assignTask)
