@@ -155,8 +155,12 @@ Ejercicios.belongsTo(Entrenador);
 Entrenador.hasMany(SubGrupos);
 SubGrupos.belongsTo(Entrenador);
 
-Microciclos.belongsToMany(Tareas,{through:TareasMicrociclo});
-Tareas.belongsToMany(Microciclos,{through:TareasMicrociclo});
+Microciclos.hasMany(TareasMicrociclo);
+TareasMicrociclo.belongsTo(Microciclos);
+
+Tareas.hasMany(TareasMicrociclo);
+TareasMicrociclo.belongsTo(Tareas);
+
 
 Entrenador.hasMany(Tareas);
 Tareas.belongsTo(Entrenador);
