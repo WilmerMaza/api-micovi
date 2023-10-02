@@ -4,12 +4,17 @@ const { Ejercicios, SubGrupos, Grupos } = require("../../db.js");
 
 
 const getAllexercises = async (req, resp) => {
-        const { coachId } = req.query;
+        const {
+            user: {
+              dataUser:{ID },
+            },
+          } = req;
 
+    
         try {
             const data = await Ejercicios.findAll({
                 where: {
-                    EntrenadorID: coachId
+                    EntrenadorID: ID
                 },
                 include:[{
                     model: SubGrupos,
@@ -24,9 +29,13 @@ const getAllexercises = async (req, resp) => {
 }
 
 const getAllSubGrupos = async (req, res) => {
-    const { coachId } = req.query;
+    const {
+        user: {
+          dataUser:{ID },
+        },
+      } = req;
     try {
-        res.send({item: await SubGrupos.findAll({where:{EntrenadorID: coachId}})})
+        res.send({item: await SubGrupos.findAll({where:{EntrenadorID: ID}})})
     } catch (error) {
         res.json({Error:`${error}`})
     }
@@ -42,8 +51,15 @@ const getAllGrupos = async (req, res) => {
 
 const createSubGrupos = async (req, res) => {
     const { dataUser: { ID }} = req.user;
+    const { NameSubGrupo } =req.body
 
     try {
+        const subgrupo = await SubGrupos.findOne({
+        where: { NameSubGrupo: NameSubGrupo }
+        });
+
+        if(!subgrupo )
+        {
         await SubGrupos.create({
             ...req.body,
             ID: v1(),
@@ -54,6 +70,14 @@ const createSubGrupos = async (req, res) => {
                 msg: "El subgrupo se ha creado satisfactoriamente"
             })
         })
+        }
+    else
+    {
+        res.send ({
+            success: false,
+            msg: "El subgrupo ya exite"
+        })
+    }
 
     } catch (error) {
         res.send({
