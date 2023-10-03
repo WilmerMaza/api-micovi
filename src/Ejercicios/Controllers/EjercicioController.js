@@ -5,7 +5,8 @@ const {
     getAllSubGrupos, 
     getAllGrupos, 
     createSubGrupos,
-    createExercise
+    createExercise,
+    getAll_Unitsofmeasurements
 } = require("../Services/exercisesService.js");
 
 
@@ -20,5 +21,6 @@ router.post("/create-subGrupo", createSubGrupos);
 
 router.get("/getAll-Grupos", getAllGrupos);
 
+router.get("/getAll-Unitsofmeasurements", getAll_Unitsofmeasurements)
 
 module.exports = router;
