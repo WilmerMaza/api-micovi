@@ -110,6 +110,9 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
+    Abbreviation: {
+      type: DataTypes.STRING,
+    },
     Description: { type: DataTypes.STRING },
   });
 
