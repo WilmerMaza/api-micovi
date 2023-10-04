@@ -1,6 +1,6 @@
 const { conn } = require("../../db.js");
 const { v1 } = require('uuid');
-const { Ejercicios, SubGrupos, Grupos } = require("../../db.js");
+const { Ejercicios, SubGrupos, Grupos, UnitTypes } = require("../../db.js");
 
 
 const getAllexercises = async (req, resp) => {
@@ -90,14 +90,25 @@ const createSubGrupos = async (req, res) => {
 
 const createExercise = async (req, res) => {
     const { dataUser: { ID }} = req.user;
-
+    const { UnidTypes } = req.body;
     try {
         await Ejercicios.create({
             ID: v1(),
             ...req.body,
             EntrenadorID: ID
         })
-        .then(() => {
+        .then((data) => {
+                const { dataValues: { ID }} = data;
+                UnidTypes.forEach(async(element) => {
+                    const { UnitsofmeasurementID, Type} = element;
+                    await UnitTypes.create({
+                        ID: v1(),
+                        EjercicioID: ID,
+                        UnitsofmeasurementID,
+                        Type
+                    })
+                });
+
             res.send({
                 success: true,
                 msg: "El ejercicio se ha creado satisfactoriamente"
