@@ -122,6 +122,17 @@ const createExercise = async (req, res) => {
         throw new Error(`Error al insertar el ejercicio, Error: ${error}`);
     }
 }
+
+const getAll_Unitsofmeasurements = async (req, res) => {
+    try {
+        await Unitsofmeasurements.findAll()
+        .then((data) => {
+            res.send({item: data})
+        })
+    } catch (error) {
+        res.json({msg: error})
+    }
+}
     
 
 module.exports = {
@@ -129,5 +140,6 @@ module.exports = {
     getAllSubGrupos,
     getAllGrupos,
     createSubGrupos,
-    createExercise
+    createExercise,
+    getAll_Unitsofmeasurements
 }
