@@ -1,6 +1,6 @@
 const { conn } = require("../../db.js");
 const { v1 } = require('uuid');
-const { Ejercicios, SubGrupos, Grupos, UnitTypes } = require("../../db.js");
+const { Ejercicios, SubGrupos, Grupos, UnitTypes, Unitsofmeasurements  } = require("../../db.js");
 
 
 const getAllexercises = async (req, resp) => {
