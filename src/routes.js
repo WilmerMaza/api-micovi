@@ -10,7 +10,7 @@ const EntrenadorRouter = require("./Entrenadores/Controllers/EntrenadorControlle
 const CategoriaRouter = require("./Categorias/Controllers/CategoriaController.js");
 const EjercicioRouter = require("./Ejercicios/Controllers/EjercicioController.js");
 const TareasRouter = require("./Tareas/routes.js")
-
+const subirImagenRoutes=require("./subirImagen/controllers/subirController.js")
 const router = Router();
 
 router.use("/login", LoginRoutes);
@@ -22,7 +22,7 @@ router.use("/Entrenador", EntrenadorRouter);
 router.use("/Categoria", CategoriaRouter);
 router.use("/exercises", verificationToken, EjercicioRouter)
 router.use("/Tareas",verificationToken,TareasRouter);
-
+router.use("/subirImagen",subirImagenRoutes);
 
 router.use("*", (req, res) => {
     res.status(404).send({ error: "page not found" });
