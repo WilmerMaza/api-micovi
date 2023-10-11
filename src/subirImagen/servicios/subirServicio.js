@@ -21,4 +21,26 @@ const pathDirect = () => {
 };
 
 const upload = multer({ storage: storage });
-module.exports = { upload, pathDirect };
+
+const contentTypeMap = {
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+};
+
+
+function handleImageRequest(req, res) {
+  const filename = req.params.filename;
+  const fileExtension = path.extname(filename).toLowerCase();
+  const carpeta = pathDirect(); 
+  if (contentTypeMap[fileExtension]) {
+    res.setHeader("Content-Type", contentTypeMap[fileExtension]);
+    res.sendFile(path.join(carpeta, "uploads", filename));
+  } else {
+    res.status(400).json({ error: "Formato de imagen no admitido" });
+  }
+}
+
+module.exports = { upload, pathDirect,handleImageRequest};
