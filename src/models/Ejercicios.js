@@ -18,6 +18,8 @@ module.exports = (sequelize) => {
     Description: { type: DataTypes.STRING },
     VisualIllustration: { type: DataTypes.STRING },
     Relationship: { type: DataTypes.STRING },
+    IsCombined:{type: DataTypes.BOOLEAN },
+    IdCombined: {type: DataTypes.STRING}
   });
 
   sequelize.define("SubGrupos", {

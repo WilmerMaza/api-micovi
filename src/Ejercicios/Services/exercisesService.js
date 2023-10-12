@@ -1,6 +1,14 @@
 const { conn } = require("../../db.js");
 const { v1 } = require('uuid');
-const { Ejercicios, SubGrupos, Grupos, UnitTypes, Unitsofmeasurements  } = require("../../db.js");
+const { 
+    Ejercicios, 
+    SubGrupos, 
+    Grupos, 
+    UnitTypes, 
+    Unitsofmeasurements,
+    Combinacion,
+    RelacionCombinados
+  } = require("../../db.js");
 
 
 const getAllexercises = async (req, resp) => {
@@ -123,6 +131,66 @@ const createExercise = async (req, res) => {
     }
 }
 
+const CombineExercise = async (req, res) => {
+    const { dataUser: { ID }} = req.user;
+    const { UnidTypes, ListIDExercises } = req.body;
+
+    let EjercicioID = "";
+    const EntrenadorID = ID;
+    try {
+        await Combinacion.create({
+            ID: v1(),
+            ...req.body
+        })
+        .then( async (data) => {
+                const { dataValues: { ID }} = data;
+
+                await Ejercicios.create({
+                    ID: v1(),
+                    ...req.body,
+                    IsCombined: true,
+                    IdCombined: ID,
+                    EntrenadorID
+                }).then( async (data) => {
+                    EjercicioID = data.ID;
+
+                    ListIDExercises.forEach( async (item) => {
+                        const { dataValues: { IdCombined }} = data;
+                        await RelacionCombinados.create({
+                            ID: v1(),
+                            EjercicioID: item,
+                            CombinacionID: IdCombined
+                        })
+                    })
+
+                })
+                .then(() => {
+                    UnidTypes.forEach(async(element) => {
+                    const { UnitsofmeasurementID, Type} = element;
+                    await UnitTypes.create({
+                        ID: v1(),
+                        EjercicioID,
+                        UnitsofmeasurementID,
+                        Type
+                    })
+                })
+
+                });
+
+            res.send({
+                success: true,
+                msg: "La combinacion se ha creado satisfactoriamente"
+            })
+        })
+    } catch (error) {
+        res.send({
+            success: false,
+            msg: error
+        })
+        throw new Error(`Error al insertar la conbinacion de ejercicios, Error: ${error}`);
+    }
+}
+
 const getAll_Unitsofmeasurements = async (req, res) => {
     try {
         await Unitsofmeasurements.findAll()
@@ -141,5 +209,6 @@ module.exports = {
     getAllGrupos,
     createSubGrupos,
     createExercise,
-    getAll_Unitsofmeasurements
+    getAll_Unitsofmeasurements,
+    CombineExercise
 }
