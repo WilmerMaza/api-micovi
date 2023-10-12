@@ -187,7 +187,7 @@ const CombineExercise = async (req, res) => {
             success: false,
             msg: error
         })
-        throw new Error(`Error al insertar la conbinacion de ejercicios, Error: ${error}`);
+        throw new Error( `Error al insertar la conbinacion de ejercicios, Error: ${error}`);
     }
 }
 
