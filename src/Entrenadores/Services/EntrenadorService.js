@@ -7,6 +7,11 @@ const {
 const { v1 } = require("uuid");
 const { AES, enc } = require("crypto-ts");
 const { Op } = require("sequelize");
+const {
+  sportInstitution,
+} = require("../../subirImagen/servicios/subirServicio.js");
+const path = require("path");
+const fs = require("fs");
 
 class EntrenadorService {
   async createEntrenador(data) {
@@ -89,7 +94,7 @@ class EntrenadorService {
 
       if (name) {
         whereClause.name = {
-          [Op.iLike]: `%${name}%`
+          [Op.iLike]: `%${name}%`,
         };
       }
 
@@ -119,6 +124,20 @@ class EntrenadorService {
       if (rowsUpdated[0] === 0) {
         // No se actualizó ningún registro
         return null;
+      } else {
+        const { deleteImg } = body;
+        if (deleteImg !== "") {
+          const nameInstitution = await sportInstitution(dataUpdate);
+
+          const baseDirectory = path.join(__dirname, "../..", "uploads");
+
+          const userDirectory = path.join(baseDirectory, nameInstitution);
+
+          const imagePath = path.join(userDirectory, deleteImg);
+          fs.unlinkSync(imagePath);
+
+          return " actualizado con éxito";
+        }
       }
 
       return "Entrenador actualizado con éxito";
