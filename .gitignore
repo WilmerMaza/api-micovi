@@ -131,3 +131,6 @@ dist
 
 #config
 src/config/config.json
+
+#upload Imagen
+src/upload/*
