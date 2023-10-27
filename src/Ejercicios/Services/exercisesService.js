@@ -11,30 +11,72 @@ const {
   } = require("../../db.js");
 
 
-const getAllexercises = async (req, resp) => {
-        const {
-            user: {
-              dataUser:{ID },
-            },
-          } = req;
-
-    
-        try {
-            const data = await Ejercicios.findAll({
-                where: {
-                    EntrenadorID: ID
-                },
-                include:[{
-                    model: SubGrupos,
-                    include:[{model: Grupos}]
-                }]
-            })
-
-            resp.send({item: data})
-        } catch (error) {
-            resp.json({Error:`${error}`})
-        }
-}
+  const getAllexercises = async (req, resp) => {
+    const {
+      user: {
+        dataUser: { ID },
+      },
+    } = req;
+  
+    try {
+      const exercises = await Ejercicios.findAll({
+        where: {
+          EntrenadorID: ID,
+        },
+        include: [
+          {
+            model: SubGrupos,
+            include: [{ model: Grupos }],
+          },
+        ],
+      });
+  
+      const exerciseIDs = exercises.map((exercise) => exercise.ID);
+  
+      const unitTypes = await UnitTypes.findAll({
+        where: {
+          EjercicioID: exerciseIDs,
+          Type: ["cantidad", "calidad"],
+        },
+      });
+  
+      const unitOfMeasurements = await Unitsofmeasurements.findAll({
+        where: {
+          ID: unitTypes.map((unitType) => unitType.UnitsofmeasurementID),
+        },
+        attributes: ["ID", "Name", "Description"],
+      });
+  
+      const exerciseData = exercises.map((exercise) => {
+        const cantidad = unitOfMeasurements.find(
+          (unit) =>
+            unitTypes.find(
+              (unitType) =>
+                unitType.EjercicioID === exercise.ID && unitType.Type === "cantidad"
+            )?.UnitsofmeasurementID === unit.ID
+        );
+  
+        const calidad = unitOfMeasurements.find(
+          (unit) =>
+            unitTypes.find(
+              (unitType) =>
+                unitType.EjercicioID === exercise.ID && unitType.Type === "calidad"
+            )?.UnitsofmeasurementID === unit.ID
+        );
+  
+        return {
+          ...exercise.dataValues,
+          Cantidad: cantidad ? cantidad.dataValues : null,
+          Calidad: calidad ? calidad.dataValues : null,
+        };
+      });
+  
+      resp.send({ item: exerciseData });
+    } catch (error) {
+      resp.json({ Error: `${error}` });
+    }
+  };
+  
 
 const getAllSubGrupos = async (req, res) => {
     const {
