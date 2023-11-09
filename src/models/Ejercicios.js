@@ -53,7 +53,7 @@ module.exports = (sequelize) => {
     Abbreviation: {
       type: DataTypes.STRING,
     },
-    Description: { type: DataTypes.STRING },
+    Description: { type: DataTypes.STRING(255000) },
   });
 
   sequelize.define("Indicadores", {
@@ -109,13 +109,13 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     Name: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     Abbreviation: {
       type: DataTypes.STRING,
     },
-    Description: { type: DataTypes.STRING },
+    Description: { type: DataTypes.STRING(25500) },
   });
 
   sequelize.define("Patterns", {
