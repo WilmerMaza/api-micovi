@@ -146,6 +146,9 @@ Indicadores.hasMany(Levels);
 Indicadores.belongsTo(Ejercicios);
 Ejercicios.hasMany(Indicadores);
 
+Indicadores.belongsTo(SportsMan);
+SportsMan.hasMany(Indicadores);
+
 Ejercicios.belongsToMany(Unitsofmeasurements, {through: UnitTypes});
 Unitsofmeasurements.belongsToMany(Ejercicios, {through: UnitTypes})
 

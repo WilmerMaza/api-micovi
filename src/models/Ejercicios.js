@@ -19,7 +19,10 @@ module.exports = (sequelize) => {
     VisualIllustration: { type: DataTypes.STRING },
     Relationship: { type: DataTypes.STRING },
     IsCombined:{type: DataTypes.BOOLEAN },
-    IdCombined: {type: DataTypes.STRING}
+    IdCombined: {type: DataTypes.STRING},
+    HasIndicators: {type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    }
   });
 
   sequelize.define("SubGrupos", {
@@ -72,6 +75,7 @@ module.exports = (sequelize) => {
     },
     Description: { type: DataTypes.STRING },
     AbsolutePercentage: { type: DataTypes.DECIMAL },
+    CalificationLevel: { type: DataTypes.INTEGER }
   });
 
   sequelize.define("Levels", {
@@ -85,6 +89,7 @@ module.exports = (sequelize) => {
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
+    LevelName: { type: DataTypes.STRING},
     Description: { type: DataTypes.STRING },
   });
 
