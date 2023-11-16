@@ -91,6 +91,10 @@ module.exports = (sequelize) => {
             validate: {
             isUrl: true,
             },
+        },
+        HasIndicators: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
         }
 
     })

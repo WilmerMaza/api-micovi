@@ -1,5 +1,5 @@
 const { v1 } = require('uuid');
-const { Indicadores, Levels, Ejercicios } = require("../../db.js");
+const { Indicadores, Levels, SportsMan } = require("../../db.js");
 
 const createIndicators = async (req, res) => {
     const { name, description, levelCal, absolute, sportman, levelList, exercisesList, abrev } = req.body;
@@ -26,9 +26,9 @@ const createIndicators = async (req, res) => {
                     })
                 });
 
-                const rowsUpdated = await Ejercicios.update(
+                const rowsUpdated = await SportsMan.update(
                 {HasIndicators : true},
-                { where: {ID: data.EjercicioID},
+                { where: {ID: data.SportsManID},
                 returning: true})
 
                 if (rowsUpdated[0] === 0){
