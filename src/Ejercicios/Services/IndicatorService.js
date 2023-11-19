@@ -1,5 +1,5 @@
 const { v1 } = require('uuid');
-const { Indicadores, Levels, SportsMan } = require("../../db.js");
+const { Indicadores, Levels, SportsMan, Ejercicios, SubGrupos, Grupos } = require("../../db.js");
 
 const createIndicators = async (req, res) => {
     const { name, description, levelCal, absolute, sportman, levelList, exercisesList, abrev } = req.body;
@@ -56,7 +56,41 @@ const createIndicators = async (req, res) => {
     }
 }
 
+const getIndicators = async (req, res) => {
+
+    const { id } = req.query;
+
+    try {
+        const result = await Indicadores.findAll({
+            where:{SportsManID: id},
+            include:[
+                {
+                    model:Ejercicios,
+                    include:[
+                        { 
+                            model: SubGrupos,
+                            include: [{model: Grupos}]
+                        }
+                    ]
+                },
+                {
+                    model: Levels
+                },
+                {
+                    model:SportsMan
+                }
+            ]
+        })
+
+        res.json({item: result});
+    } catch (error) {
+        res.json(error);
+    }
+
+}
+
 
 module.exports = {
-    createIndicators
+    createIndicators,
+    getIndicators
 }
