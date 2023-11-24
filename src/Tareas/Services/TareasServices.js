@@ -5,7 +5,7 @@ class TareasServices {
   async createTarea(data) {
     try {
       const {
-        body: { name, describe },
+        body: { name, describe, color },
         user: {
           dataUser: { ID },
         },
@@ -20,6 +20,7 @@ class TareasServices {
             ID: v1(),
             name: name,
             describe: describe,
+            color: color,
             EntrenadorID: ID,
           });
         } catch (error) {
@@ -54,6 +55,22 @@ class TareasServices {
       });
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async deleteTarea(request) {
+    try {
+      const {
+        dataUser: { ID },
+      } = request.user;
+
+      const idTarea = request.params.idTarea;
+      await Tareas.destroy({
+        where: { EntrenadorID: ID, ID: idTarea },
+      });
+    } catch (error) {
+      console.error("Error al Eliminar la Tarea:", error);
+      throw error;
     }
   }
 }

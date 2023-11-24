@@ -30,7 +30,7 @@ class TaresxMicroService {
         include: [
           {
             model: Tareas,
-            attributes: ['name'], // Selecciona las columnas de Tareas que deseas traer
+            attributes: ['name','color'], // Selecciona las columnas de Tareas que deseas traer
           },
         ],
       });

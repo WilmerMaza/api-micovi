@@ -37,8 +37,9 @@ server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(status).send(message);
 });
 
-server.listen(process.env.PORT || 3002, () => {
-  console.log("Server listening on port 3002!");
+const {env:{PORT}} = process
+server.listen(PORT || 3002, () => {
+  console.log(`Server listening on port ${PORT??3002}!`);
   conn.sync({ force: false });
 
 });

@@ -12,6 +12,15 @@ router.get("/getAll", verificationToken, async (req, res) => {
   }
 });
 
+router.delete("/delete/:idCategoria", verificationToken, async (req, res) => {
+  try {
+    await CategoriaService.deleteCategoria(req);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).json({ error: "Error al Eliminar el Registro" });
+  }
+});
+
 router.post("/create",verificationToken, async (req, res) => {
   try {
     await CategoriaService.createCategoria(req);

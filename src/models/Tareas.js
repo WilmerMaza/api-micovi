@@ -14,6 +14,10 @@ module.exports = (sequelize) => {
       unique: true,
     },
     describe: {
+      type: DataTypes.STRING(25500),
+      allowNull: false,
+    },
+    color: {
       type: DataTypes.STRING,
       allowNull: false,
     }

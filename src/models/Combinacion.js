@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
       Abbreviation: {
         type: DataTypes.STRING,
       },
-      Description: { type: DataTypes.STRING },
+      Description: { type: DataTypes.STRING(25500) },
       VisualIllustration: { type: DataTypes.STRING },
       Relationship: { type: DataTypes.STRING },
     });

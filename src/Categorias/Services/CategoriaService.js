@@ -1,6 +1,4 @@
-const {
-  Categoria
-} = require("../../db.js");
+const { Categoria } = require("../../db.js");
 const { v1 } = require("uuid");
 
 class CategoriaService {
@@ -31,15 +29,35 @@ class CategoriaService {
 
   async getAllCategoria(request) {
     try {
-    
-      const { dataUser:{ID,SportsInstitutionID }} = request.user;
-      const IDSearch = SportsInstitutionID === undefined?ID:SportsInstitutionID;
+      const {
+        dataUser: { ID, SportsInstitutionID },
+      } = request.user;
+      const IDSearch =
+        SportsInstitutionID === undefined ? ID : SportsInstitutionID;
 
       return await Categoria.findAll({
         where: { SportsInstitutionID: IDSearch },
       });
     } catch (error) {
       console.error("Error al obtener las Categorias:", error);
+      throw error;
+    }
+  }
+
+  async deleteCategoria(request) {
+    try {
+      const {
+        dataUser: { ID, SportsInstitutionID },
+      } = request.user;
+      const IDSearch =
+        SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+
+      const idCategoria = request.params.idCategoria;
+      await Categoria.destroy({
+        where: { SportsInstitutionID: IDSearch, ID: idCategoria },
+      });
+    } catch (error) {
+      console.error("Error al Eliminar la Categorias:", error);
       throw error;
     }
   }
@@ -92,7 +110,6 @@ class CategoriaService {
       throw error;
     }
   }
-
 }
 
 module.exports = new CategoriaService();
