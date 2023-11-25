@@ -27,4 +27,13 @@ async function getTareas(req, res) {
   }
 }
 
-module.exports = { crearTareas , getTareas};
+async function deleteTareas(req, res) {
+  try {
+    await TareasServices.deleteTarea(req);
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).json({ error: "Error al Eliminar el Registro" });
+  }
+}
+
+module.exports = { crearTareas, getTareas, deleteTareas };

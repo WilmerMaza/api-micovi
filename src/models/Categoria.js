@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
       unique: true,
     },
     descripcion: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(25500),
       allowNull: true,
     }
   });

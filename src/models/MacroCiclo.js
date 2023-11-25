@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     detail: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(25500),
         allowNull: false
     },
     date_initial: {
