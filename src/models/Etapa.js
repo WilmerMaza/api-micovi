@@ -1,0 +1,22 @@
+const { DataTypes, Sequelize } = require("sequelize");
+
+module.exports = (sequelize) => {
+  sequelize.define("Etapa", {
+    ID: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      unique: true,
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    descripcion: {
+      type: DataTypes.STRING(25500),
+      allowNull: true,
+    }
+  });
+
+};
