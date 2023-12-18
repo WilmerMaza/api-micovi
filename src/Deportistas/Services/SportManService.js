@@ -1,6 +1,11 @@
-const { SportsMan, SportsInstitutions, HistorialCategorico, Categoria } = require("../../db.js");
-const { v1 } = require('uuid');
-const { Op } = require('sequelize');
+const {
+  SportsMan,
+  SportsInstitutions,
+  HistorialCategorico,
+  Categoria,
+} = require("../../db.js");
+const { v1 } = require("uuid");
+const { Op } = require("sequelize");
 const { AES, enc } = require("crypto-ts");
 
 class SportsManService {
@@ -9,11 +14,12 @@ class SportsManService {
       const {
         body: { identification },
         user: {
-          dataUser:{ID,SportsInstitutionID },
+          dataUser: { ID, SportsInstitutionID },
         },
       } = data;
 
-      const IDSearch = SportsInstitutionID === undefined?ID:SportsInstitutionID;
+      const IDSearch =
+        SportsInstitutionID === undefined ? ID : SportsInstitutionID;
 
       const res = await this.getSportsMan(identification);
       if (!res) {
@@ -41,15 +47,18 @@ class SportsManService {
 
   async getAllSportsMen(req) {
     try {
-      const { dataUser: { ID, SportsInstitutionID } } = req.user;
-      const IDSearch = SportsInstitutionID === undefined ? ID : SportsInstitutionID;
-  
+      const {
+        dataUser: { ID, SportsInstitutionID },
+      } = req.user;
+      const IDSearch =
+        SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+
       const sportsMen = await SportsMan.findAll({
         where: {
-          SportsInstitutionID: IDSearch
-        }
+          SportsInstitutionID: IDSearch,
+        },
       });
-  
+
       return sportsMen;
     } catch (error) {
       console.error("Error al obtener todos los deportistas:", error);
@@ -59,15 +68,17 @@ class SportsManService {
 
   async getSportsMenWithFilters(req) {
     try {
-
-      const {dataUser: { ID, SportsInstitutionID } } = req.user;
-      const { body : filters } = req
-      const IDSearch = SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+      const {
+        dataUser: { ID, SportsInstitutionID },
+      } = req.user;
+      const { body: filters } = req;
+      const IDSearch =
+        SportsInstitutionID === undefined ? ID : SportsInstitutionID;
 
       const query = {
         where: {
-          SportsInstitutionID: IDSearch
-        }
+          SportsInstitutionID: IDSearch,
+        },
       };
 
       if (filters.Name) {
@@ -75,7 +86,9 @@ class SportsManService {
       }
 
       if (filters.identificacion) {
-        query.where.identification = { [Op.like]: `%${filters.identificacion}%` };
+        query.where.identification = {
+          [Op.like]: `%${filters.identificacion}%`,
+        };
       }
 
       if (filters.category && filters.category.length > 0) {
@@ -87,7 +100,9 @@ class SportsManService {
       }
 
       if (filters.typeIdentification && filters.typeIdentification.length > 0) {
-        query.where.typeIdentification = { [Op.in]: filters.typeIdentification };
+        query.where.typeIdentification = {
+          [Op.in]: filters.typeIdentification,
+        };
       }
 
       const sportsMen = await SportsMan.findAll(query);
@@ -135,11 +150,23 @@ class SportsManService {
         returning: true,
       });
 
-      if (rowsUpdated === 0) {
+      if (rowsUpdated[0] === 0) {
         throw new Error("No se pudo actualizar el deportista");
-      }
+      } else {
+        const { deleteImg } = body;
+        if (deleteImg !== "") {
+          const nameInstitution = await sportInstitution(dataUpdate);
 
-      return { ...updatedSportsMan.get(), changes };
+          const baseDirectory = path.join(__dirname, "../..", "uploads");
+
+          const userDirectory = path.join(baseDirectory, nameInstitution);
+
+          const imagePath = path.join(userDirectory, deleteImg);
+          fs.unlinkSync(imagePath);
+
+          return { ...updatedSportsMan.get(), changes };
+        }
+      }
     } catch (error) {
       console.error("Error al actualizar el deportista:", error);
       throw error;
@@ -163,7 +190,6 @@ class SportsManService {
     }
   }
 
-
   async getSportsMan(identification) {
     try {
       return await SportsMan.findOne({
@@ -178,35 +204,35 @@ class SportsManService {
   async getHistorialCategory(idCsportsman) {
     try {
       const {
-        body: { id }
+        body: { id },
       } = idCsportsman;
-  
+
       const historiales = await HistorialCategorico.findAll({
         where: { SportsManID: id },
-        order: [['createdAt', 'DESC']], // Ordenar por la columna 'createdAt' en orden descendente
+        order: [["createdAt", "DESC"]], // Ordenar por la columna 'createdAt' en orden descendente
       });
-  
+
       const historialesConNombres = await Promise.all(
         historiales.map(async (historial) => {
           const categoria = await Categoria.findOne({
             where: { ID: historial.CategoriumID },
           });
-  
+
           const categoryName = categoria ? categoria.name : null;
-  
+
           return {
             ...historial.toJSON(),
             categoryName: categoryName,
           };
         })
       );
-  
+
       return historialesConNombres;
     } catch (error) {
       console.error("Error al obtener el historial de categorías:", error);
       throw error;
     }
-  }  
+  }
 }
 
 module.exports = new SportsManService();

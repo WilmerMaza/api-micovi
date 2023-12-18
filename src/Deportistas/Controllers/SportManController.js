@@ -36,7 +36,7 @@ router.post('/delete', verificationToken, async (req, res) => {
 
 router.post('/create', verificationToken, async (req, res) => {
   try {
-    const sportsMan = await sportsManService.createSportsMan(req);
+  await sportsManService.createSportsMan(req);
     const response = {
       Message: "Deportista creado con éxito",
     };
