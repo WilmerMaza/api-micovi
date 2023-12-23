@@ -1,12 +1,15 @@
 const {
   SportsMan,
-  SportsInstitutions,
   HistorialCategorico,
   Categoria,
 } = require("../../db.js");
 const { v1 } = require("uuid");
 const { Op } = require("sequelize");
-const { AES, enc } = require("crypto-ts");
+const {
+  sportInstitution,
+} = require("../../subirImagen/servicios/subirServicio.js");
+const path = require("path");
+const fs = require("fs");
 
 class SportsManService {
   async createSportsMan(data) {
@@ -114,9 +117,10 @@ class SportsManService {
     }
   }
 
-  async updateSportsMan(data) {
+  async updateSportsMan(request) {
+    const { body } = request;
     try {
-      const existingSportsMan = await SportsMan.findByPk(data.ID);
+      const existingSportsMan = await SportsMan.findByPk(body.ID);
 
       if (!existingSportsMan) {
         throw new Error("Deportista no encontrado");
@@ -124,29 +128,29 @@ class SportsManService {
 
       // Comparar los cambios
       const changes = {};
-      const categoryChanged = existingSportsMan.category !== data.category;
+      const categoryChanged = existingSportsMan.category !== body.category;
 
       if (categoryChanged) {
         // Actualizar fecha de finalización en la categoría anterior
         await HistorialCategorico.update(
           { FechaFin: new Date() },
-          { where: { SportsManID: data.ID, CategoriumID: data.CategoriumID } }
+          { where: { SportsManID: body.ID, CategoriumID: body.CategoriumID } }
         );
 
         // Insertar nuevo registro en HistorialCategoricos
         await HistorialCategorico.create({
           FechaInicio: new Date(),
           FechaFin: new Date(),
-          CategoriumID: data.CategoriumID,
-          SportsManID: data.ID,
+          CategoriumID: body.CategoriumID,
+          SportsManID: body.ID,
         });
 
-        changes.category = data.category;
+        changes.category = body.category;
       }
 
       // Actualizar datos del deportista
-      const [rowsUpdated, [updatedSportsMan]] = await SportsMan.update(data, {
-        where: { ID: data.ID },
+      const [rowsUpdated, [updatedSportsMan]] = await SportsMan.update(body, {
+        where: { ID: body.ID },
         returning: true,
       });
 
@@ -155,17 +159,21 @@ class SportsManService {
       } else {
         const { deleteImg } = body;
         if (deleteImg !== "") {
-          const nameInstitution = await sportInstitution(dataUpdate);
+          const nameInstitution = await sportInstitution(request);
 
           const baseDirectory = path.join(__dirname, "../..", "uploads");
 
           const userDirectory = path.join(baseDirectory, nameInstitution);
 
           const imagePath = path.join(userDirectory, deleteImg);
-          fs.unlinkSync(imagePath);
-
-          return { ...updatedSportsMan.get(), changes };
+          try {
+            fs.unlinkSync(imagePath);
+          } catch (error) {
+            return { ...updatedSportsMan.get(), changes }
+          }
+          
         }
+        return { ...updatedSportsMan.get(), changes };
       }
     } catch (error) {
       console.error("Error al actualizar el deportista:", error);

@@ -1,4 +1,4 @@
-const { Etapa } = require("../../db.js");
+const { Etapa, Microciclos } = require("../../db.js");
 const { v1 } = require("uuid");
 
 class EtapaService {
@@ -43,9 +43,57 @@ class EtapaService {
     }
   }
 
+  async assingEtapa(request) {
+    try {
+      const { MicrocicloID, MacrocicloID, EtapaID } = request.body;
+
+      const microcicloData = await this.getMicrociclo(
+        MicrocicloID,
+        MacrocicloID
+      );
+
+      if (microcicloData) {
+        const etapaData = await this.getEtapaID(EtapaID);
+        const body = {
+          ...microcicloData,
+          EtapaID,
+          stages: etapaData.name,
+        };
+
+        const [rowsUpdated, [updatedmicrociclo]] = await Microciclos.update(
+          body,
+          {
+            where: { ID: MicrocicloID, MacrocicloID },
+            returning: true,
+          }
+        );
+
+        if (rowsUpdated[0] === 0) {
+          throw new Error("No se pudo actualizar el microciclo");
+        }
+      } else {
+        throw new Error("No Existe Microciclo");
+      }
+    } catch (error) {
+      console.error("Error al Asignar las Etapas:", error);
+      throw error;
+    }
+  }
+
   async getEtapa(name) {
     return await Etapa.findOne({
       where: { name: name },
+    });
+  }
+  async getEtapaID(EtapaID) {
+    return await Etapa.findOne({
+      where: { ID: EtapaID },
+    });
+  }
+
+  async getMicrociclo(MicrocicloID, MacrocicloID) {
+    return await Microciclos.findOne({
+      where: { ID: MicrocicloID, MacrocicloID },
     });
   }
 }
