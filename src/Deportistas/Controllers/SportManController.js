@@ -5,7 +5,7 @@ const { verificationToken } = require("../../Utils/validateToken.js");
 
 router.post('/update', verificationToken, async (req, res) => {
   try {
-    const updatedSportsMan = await sportsManService.updateSportsMan(req.body);
+    const updatedSportsMan = await sportsManService.updateSportsMan(req);
     if (updatedSportsMan) {
       const response = {
         Message: "Registro Actualizado Exitosamente",

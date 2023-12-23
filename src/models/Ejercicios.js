@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
     Abbreviation: {
       type: DataTypes.STRING,
     },
-    Description: { type: DataTypes.STRING },
+    Description: { type: DataTypes.STRING(25500) },
     VisualIllustration: { type: DataTypes.STRING },
     Relationship: { type: DataTypes.STRING },
     IsCombined:{type: DataTypes.BOOLEAN },
@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
     abreviatura: {
       type: DataTypes.STRING,
     },
-    Description: { type: DataTypes.STRING },
+    Description: { type: DataTypes.STRING(2555000) },
   });
 
   sequelize.define("Grupos", {
@@ -71,7 +71,7 @@ module.exports = (sequelize) => {
     Abbreviation: {
       type: DataTypes.STRING,
     },
-    Description: { type: DataTypes.STRING },
+    Description: { type: DataTypes.STRING(2555000) },
     AbsolutePercentage: { type: DataTypes.DECIMAL },
     CalificationLevel: { type: DataTypes.INTEGER }
   });
@@ -88,7 +88,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     LevelName: { type: DataTypes.STRING},
-    Description: { type: DataTypes.STRING },
+    Description: { type: DataTypes.STRING(2555000) },
   });
 
   sequelize.define("UnitTypes", {

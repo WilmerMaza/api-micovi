@@ -171,6 +171,9 @@ Tareas.belongsTo(Entrenador);
 Entrenador.hasMany(Etapa);
 Etapa.belongsTo(Entrenador);
 
+Etapa.hasMany(Microciclos);
+Microciclos.belongsTo(Etapa);
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');

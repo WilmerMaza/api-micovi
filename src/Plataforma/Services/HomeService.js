@@ -8,7 +8,6 @@ const {
 const { v1 } = require("uuid");
 require("dotenv").config({ path: "../../.env" });
 
-
 const dataUserPlan_function = async (req, res) => {
   const {
     dataUser: { ID, SportsInstitutionID },
@@ -30,12 +29,10 @@ const dataUserPlan_function = async (req, res) => {
         .status(200)
         .send({ dataUserPlan: dataUserPlan, statusPlan: "Plan completado" });
     } else {
-      res
-        .status(208)
-        .send({
-          dataUserPlan: dataUserPlan,
-          statusPlan: "No cuenta con un plan",
-        });
+      res.status(208).send({
+        dataUserPlan: dataUserPlan,
+        statusPlan: "No cuenta con un plan",
+      });
     }
   } catch (error) {
     res
@@ -127,11 +124,9 @@ const insertMacro = async (req, res) => {
 
     await insertMicro(date_initial, date_end, data.ID);
 
-    res
-      .status(200)
-      .send({
-        msg: "Your macrocycle and microcycle have been successfully created",
-      });
+    res.status(200).send({
+      msg: "Your macrocycle and microcycle have been successfully created",
+    });
   } catch (error) {
     res
       .status(500)
@@ -167,8 +162,20 @@ const getAllMicroCiclo = async (req, res) => {
   try {
     const { documentID } = req.query;
     const data = await Macrociclos.findByPk(documentID, {
-      include: { model: Microciclos },
+      include: { model: Microciclos, order: [["number_micro", "ASC"]] },
     });
+
+    if (data) {
+      const response = data.get(); // Obtiene los datos del Macrociclo
+
+      if (response.Microciclos) {
+        // Ordena los Microciclos según la columna 'number_micro'
+        response.Microciclos = response.Microciclos.sort(
+          (a, b) => a.number_micro - b.number_micro
+        );
+       data.Microciclos =   response.Microciclos;
+      }
+    }
     res.status(200).send({ item: data });
   } catch (error) {
     throw new Error(`${error}`);
