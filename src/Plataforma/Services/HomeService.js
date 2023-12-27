@@ -4,7 +4,10 @@ const {
   Categoria,
   Macrociclos,
   Microciclos,
+  Tareas,
+  TareasMicrociclo,
 } = require("../../db.js");
+
 const { v1 } = require("uuid");
 require("dotenv").config({ path: "../../.env" });
 
@@ -125,12 +128,12 @@ const insertMacro = async (req, res) => {
     await insertMicro(date_initial, date_end, data.ID);
 
     res.status(200).send({
-      msg: "Your macrocycle and microcycle have been successfully created",
+      msg: "Macrociclo y microciclo han sido creados exitosamente.",
     });
   } catch (error) {
     res
       .status(500)
-      .send({ msg: "An error occurred while creating the macrocycle", error });
+      .send({ msg: "Ocurrió un error al crear el macrociclo.", error });
   }
 };
 
@@ -150,11 +153,11 @@ const updateMacro = async (req, res) => {
     );
     res
       .status(200)
-      .send({ msg: "Your macrocycle has been successfully updated" });
+      .send({ msg: "Macrociclo se ha actualizado exitosamente" });
   } catch (error) {
     res
       .status(500)
-      .send({ msg: "An error occurred while updating the macrocycle", error });
+      .send({ msg: "Se produjo un error al actualizar el macrociclo.", error });
   }
 };
 
@@ -173,7 +176,7 @@ const getAllMicroCiclo = async (req, res) => {
         response.Microciclos = response.Microciclos.sort(
           (a, b) => a.number_micro - b.number_micro
         );
-       data.Microciclos =   response.Microciclos;
+        data.Microciclos = response.Microciclos;
       }
     }
     res.status(200).send({ item: data });
@@ -205,7 +208,7 @@ const insertMicro = async (init, end, ID) => {
       }
       dateEnd_Micro.setDate(dateEnd_Micro.getDate() + microcycleDuration - 1);
 
-      await Microciclos.create({
+      const dataMicro = await Microciclos.create({
         ID: v1(),
         number_micro,
         month: obtenerNombreMes(dateInit_Micro),
@@ -214,6 +217,14 @@ const insertMicro = async (init, end, ID) => {
         number_days: calcularDuracionMicrociclo(dateInit_Micro, dateEnd_Micro),
         MacrocicloID: ID,
       });
+
+      if (dateEnd_Micro >= dateEnd_Macro) {
+        try {
+          await AssignarEventoFundamental(end, dataMicro);
+        } catch (error) {
+          throw new Error(`Asignación Competición Fundamental:${error}`);
+        }
+      }
 
       dateInit_Micro.setDate(dateInit_Micro.getDate() + 7);
     }
@@ -239,6 +250,33 @@ function obtenerNombreMes(fecha) {
     "Diciembre",
   ];
   return meses[fecha.getMonth()];
+}
+
+async function AssignarEventoFundamental(dateEnd_Macro, dataMicro) {
+  const actividad = await actividadFundamental();
+  if (actividad) {
+    try {
+      await TareasMicrociclo.create({
+        ID: v1(),
+        fechaInicio: dateEnd_Macro,
+        fechaFin: dateEnd_Macro,
+        MicrocicloID: dataMicro.ID,
+        TareaID: actividad.ID,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  } else {
+    throw new Error("Actividad Competición Fundamental: NO EXISTE");
+  }
+}
+
+async function actividadFundamental() {
+  const actividad = await Tareas.findOne({
+    where: { name: "Competición Fundamental" },
+  });
+
+  return actividad;
 }
 
 // Función para calcular la duración en días entre dos fechas
