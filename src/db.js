@@ -90,6 +90,7 @@ const {
   TareasMicrociclo,
   Tareas,
   Etapa,
+  Diciplinas
 } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -173,6 +174,12 @@ Etapa.belongsTo(Entrenador);
 
 Etapa.hasMany(Microciclos);
 Microciclos.belongsTo(Etapa);
+
+SportsInstitutions.hasMany(Diciplinas);
+Diciplinas.belongsTo(SportsInstitutions);
+
+Diciplinas.hasMany(SportsMan);
+SportsMan.belongsTo(Diciplinas);
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
