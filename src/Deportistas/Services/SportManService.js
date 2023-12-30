@@ -2,6 +2,8 @@ const {
   SportsMan,
   HistorialCategorico,
   Categoria,
+  Diciplinas,
+  SportsInstitutions
 } = require("../../db.js");
 const { v1 } = require("uuid");
 const { Op } = require("sequelize");
@@ -60,6 +62,16 @@ class SportsManService {
         where: {
           SportsInstitutionID: IDSearch,
         },
+        include: [
+          {
+            model: Diciplinas,
+            attributes: ["name"]
+          },
+          {
+            model: SportsInstitutions,
+            attributes: ["institutionName"],
+          },
+        ],
       });
 
       return sportsMen;
@@ -169,9 +181,8 @@ class SportsManService {
           try {
             fs.unlinkSync(imagePath);
           } catch (error) {
-            return { ...updatedSportsMan.get(), changes }
+            return { ...updatedSportsMan.get(), changes };
           }
-          
         }
         return { ...updatedSportsMan.get(), changes };
       }
