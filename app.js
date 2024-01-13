@@ -2,14 +2,13 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-const routes = require('./routes.js');
+const routes = require('./src/routes.js');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 const path = require('path'); // Importa el módulo 'path' de Node.js
-require('dotenv').config({ path: '../../.env' });
-const { conn } = require('./db.js');
+require('dotenv').config({ path: './.env' });
+const { conn } = require('./src/db.js');
 
-require('./db.js');
+require('./src/db.js');
 
 const server = express();
 
@@ -20,7 +19,7 @@ server.use(bodyParser.json());
 server.use(cookieParser());
 server.use(morgan('dev'));
 
-server.use(express.static(path.join(__dirname, 'public'))); 
+server.use(express.static(path.join(__dirname, '/src/public'))); 
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); 
   res.header('Access-Control-Allow-Credentials', 'true');
