@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
         const response = {
             isRegister : false,
             msg: 'We have detected an error when registering',
-            error: error
+            error: error.message
         }
         res.status(400).send(response)
     }
