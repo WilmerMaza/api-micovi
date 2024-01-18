@@ -218,14 +218,6 @@ const insertMicro = async (init, end, ID) => {
         MacrocicloID: ID,
       });
 
-      if (dateEnd_Micro >= dateEnd_Macro) {
-        try {
-          await AssignarEventoFundamental(end, dataMicro);
-        } catch (error) {
-          throw new Error(`Asignación Competición Fundamental:${error}`);
-        }
-      }
-
       dateInit_Micro.setDate(dateInit_Micro.getDate() + 7);
     }
   } catch (error) {
