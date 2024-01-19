@@ -83,6 +83,10 @@ module.exports = (sequelize) => {
         isUrl: true,
       },
     },
+    age: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     HasIndicators: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
