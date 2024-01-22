@@ -41,7 +41,8 @@ server.use((err, req, res, next) => {
 const { env: { PORT } } = process;
 server.listen(PORT || 3002, () => {
   console.log(`Server listening on port ${PORT ?? 3002}!`);
-  conn.sync({ force: false });
+  conn.sync({ alter: true });
+
 });
 
 module.exports = server;
