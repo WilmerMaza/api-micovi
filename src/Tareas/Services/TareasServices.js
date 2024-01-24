@@ -73,6 +73,29 @@ class TareasServices {
       throw error;
     }
   }
+
+  async updateTareaService(data) {
+    try {
+      const { name, describe, color, ID } = data.body;
+
+      const [rowsUpdated, [updatedTarea]] = await Tareas.update(
+        { name, describe, color },
+        {
+          where: { ID },
+          returning: true,
+        }
+      )
+
+      if (rowsUpdated[0] === 0) {
+        throw new Error("No se pudo actualizar la tarea");
+      } 
+      
+    }
+    catch(error) {
+      throw new Error('Error al actualizar:', error);
+    }
+
+  }
 }
 
 module.exports = new TareasServices();

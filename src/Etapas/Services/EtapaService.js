@@ -96,6 +96,29 @@ class EtapaService {
       where: { ID: MicrocicloID, MacrocicloID },
     });
   }
+
+  async updateEtapa(data) {
+    try {
+      const { name, descripcion, ID } = data.body;
+
+      const [rowsUpdated, [updatedEtapa]] = await Etapa.update(
+        { name, descripcion },
+        {
+          where: { ID },
+          returning: true,
+        }
+      )
+
+      if (rowsUpdated[0] === 0) {
+        throw new Error("No se pudo actualizar la etapa");
+      } 
+      
+    }
+    catch(error) {
+      throw new Error('Error al actualizar:', error);
+    }
+
+  }
 }
 
 module.exports = new EtapaService();

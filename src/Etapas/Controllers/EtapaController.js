@@ -41,4 +41,16 @@ router.post("/create", async (req, res) => {
   }
 });
 
+router.put("/update", async(req,res)=>{
+  try {
+    await EtapaService.updateEtapa(req);
+    const response = {
+      Menssage: "Etapa actualizada con éxito",
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar la etapa" , mjs: error.message });
+  }
+});
+
 module.exports = router;

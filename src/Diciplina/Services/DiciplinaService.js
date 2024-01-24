@@ -44,6 +44,29 @@ class DiciplinaService {
     }
   }
 
+  async updateDisciplina(data) {
+    try {
+      const { name, describe, ID } = data.body;
+
+      const [rowsUpdated, [updatedDisciplina]] = await Diciplinas.update(
+        { name, describe },
+        {
+          where: { ID },
+          returning: true,
+        }
+      )
+
+      if (rowsUpdated[0] === 0) {
+        throw new Error("No se pudo actualizar la disciplina");
+      } 
+      
+    }
+    catch(error) {
+      throw new Error('Error al actualizar:', error);
+    }
+
+  }
+
   async getDiciplina(name) {
     return await Diciplinas.findOne({
       where: { name: name },

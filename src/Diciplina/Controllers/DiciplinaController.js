@@ -26,4 +26,16 @@ router.post("/create", async (req, res) => {
   }
 });
 
+router.put("/update", async(req,res)=>{
+  try {
+    await DiciplinaService.updateDisciplina(req);
+    const response = {
+      Menssage: "Disciplina actualizada con éxito",
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar la disciplina" , mjs: error.message });
+  }
+});
+
 module.exports = router;

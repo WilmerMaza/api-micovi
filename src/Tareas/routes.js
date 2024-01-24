@@ -7,6 +7,8 @@ const TareasxMicroController = require("./Controllers/TareasxMicroController");
 router.post("/create",TareasController.crearTareas);
 router.get("/getTareas",TareasController.getTareas);
 router.delete("/delete/:idTarea",TareasController.deleteTareas);
+router.put("/update",TareasController.updateTarea);
+
 //Asignar Tareas Microciclos
 
 router.post("/assignTasks",TareasxMicroController.assignTask)

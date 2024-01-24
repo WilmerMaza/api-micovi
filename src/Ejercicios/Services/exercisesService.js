@@ -268,6 +268,31 @@ const getAll_Unitsofmeasurements = async (req, res) => {
   }
 };
 
+const updateSubGrupo = async (req, res) => {
+  try {
+    const { Description, GrupoID, NameSubGrupo, abreviatura, ID } = req.body;
+
+    const [rowsUpdated, [updatedSubGrupo]] = await SubGrupos.update(
+      { Description, GrupoID, NameSubGrupo, abreviatura },
+      {
+        where: { ID },
+        returning: true,
+      }
+    )
+
+    if (rowsUpdated[0] === 0) {
+      throw new Error("No se pudo actualizar el subgrupo");
+    } 
+
+    const response = {
+      Menssage: "Subgrupo actualizado con éxito",
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar el subgrupo" , mjs: error.message });
+  }
+};
+
 module.exports = {
   getAllexercises,
   getAllSubGrupos,
@@ -277,4 +302,5 @@ module.exports = {
   getAll_Unitsofmeasurements,
   CombineExercise,
   getGrupo,
+  updateSubGrupo
 };

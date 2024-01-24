@@ -9,6 +9,7 @@ const {
   getAll_Unitsofmeasurements,
   CombineExercise,
   getGrupo,
+  updateSubGrupo
 } = require("../Services/exercisesService.js");
 
 router.get("/getAll-exercises", getAllexercises);
@@ -18,6 +19,7 @@ router.post("/Combine-Exercise", CombineExercise);
 
 router.get("/getAll-SubGrupos", getAllSubGrupos);
 router.post("/create-subGrupo", createSubGrupos);
+router.put("/update-subgrupo", updateSubGrupo);
 
 router.get("/getAll-Grupos", getAllGrupos);
 router.get("/get-Grupo/:idGrupo", getGrupo);
