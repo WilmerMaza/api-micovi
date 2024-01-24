@@ -36,4 +36,16 @@ async function deleteTareas(req, res) {
   }
 }
 
-module.exports = { crearTareas, getTareas, deleteTareas };
+async function updateTarea(req, res) {
+  try {
+    await TareasServices.updateTareaService(req);
+    const response = {
+      Menssage: "Tarea actualizada con éxito",
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar la tarea" , mjs: error.message });
+  }
+};
+
+module.exports = { crearTareas, getTareas, deleteTareas, updateTarea};

@@ -65,4 +65,16 @@ router.post("/getAllByCoach", verificationToken, async (req, res) => {
   }
 });
 
+router.put("/update-category", async(req,res)=>{
+  try {
+    await CategoriaService.updateCategory(req);
+    const response = {
+      Menssage: "Categoria actualizada con éxito",
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar la categoria" , mjs: error.message });
+  }
+});
+
 module.exports = router;

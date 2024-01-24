@@ -110,6 +110,30 @@ class CategoriaService {
       throw error;
     }
   }
+
+  
+  async updateCategory(data) {
+    try {
+      const { name, descripcion, ID } = data.body;
+
+      const [rowsUpdated, [updatedCategoria]] = await Categoria.update(
+        { name, descripcion },
+        {
+          where: { ID },
+          returning: true,
+        }
+      )
+
+      if (rowsUpdated[0] === 0) {
+        throw new Error("No se pudo actualizar la categoria");
+      } 
+      
+    }
+    catch(error) {
+      throw new Error('Error al actualizar:', error);
+    }
+
+  }
 }
 
 module.exports = new CategoriaService();
