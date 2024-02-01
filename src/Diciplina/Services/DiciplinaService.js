@@ -1,5 +1,6 @@
 const { Diciplinas } = require("../../db.js");
 const { v1 } = require("uuid");
+const { TypeAccount } = require("../../Utils/constants.js");
 
 class DiciplinaService {
   async createDiciplina(data) {
@@ -30,11 +31,11 @@ class DiciplinaService {
   async getAll(request) {
     try {
       const {
-        dataUser: { ID, SportsInstitutionID },
+        dataUser: { ID, SportsInstitutionID, account },
       } = request.user;
 
       const IDSearch =
-        SportsInstitutionID === undefined ? ID : SportsInstitutionID;
+        account !== TypeAccount.Entrenador ? ID : SportsInstitutionID;
 
       return await Diciplinas.findAll({
         where: { SportsInstitutionID: IDSearch },
