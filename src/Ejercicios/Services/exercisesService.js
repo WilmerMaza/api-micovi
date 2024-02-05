@@ -1,4 +1,3 @@
-const { conn } = require("../../db.js");
 const { v1 } = require("uuid");
 const {
   Ejercicios,
@@ -8,6 +7,8 @@ const {
   Unitsofmeasurements,
   Combinacion,
   RelacionCombinados,
+  Indicadores,
+  SportsMan,
 } = require("../../db.js");
 
 const getAllexercises = async (req, resp) => {
@@ -26,6 +27,9 @@ const getAllexercises = async (req, resp) => {
         {
           model: SubGrupos,
           include: [{ model: Grupos }],
+        },
+        {
+          model: Indicadores,
         },
       ],
     });
@@ -69,6 +73,7 @@ const getAllexercises = async (req, resp) => {
         ...exercise.dataValues,
         Cantidad: cantidad ? cantidad.dataValues : null,
         Calidad: calidad ? calidad.dataValues : null,
+        Indicadores: exercise.Indicadores.length,
       };
     });
 
@@ -278,19 +283,53 @@ const updateSubGrupo = async (req, res) => {
         where: { ID },
         returning: true,
       }
-    )
+    );
 
     if (rowsUpdated[0] === 0) {
       throw new Error("No se pudo actualizar el subgrupo");
-    } 
+    }
 
     const response = {
       Menssage: "Subgrupo actualizado con éxito",
     };
     res.status(200).send(response);
   } catch (error) {
-    res.status(500).json({ error: "Error al actualizar el subgrupo" , mjs: error.message });
+    res
+      .status(500)
+      .json({ error: "Error al actualizar el subgrupo", mjs: error.message });
   }
+};
+
+const assignExercise = async (req, res) => {
+  const { sportman, exercise } = req.body;
+
+  const promises = [];
+
+  sportman.forEach((itemSport) => {
+    exercise.forEach((itemExercise) => {
+      const exercisePromise = Ejercicios.findByPk(itemExercise.ID).then(
+        (ejercicio) => {
+          return SportsMan.findByPk(itemSport.ID).then((sportsMan) => {
+            return ejercicio.addSportsMan(sportsMan).then(async () => {
+              const rowsUpdated = await SportsMan.update(
+                { HasIndicators: true },
+                { where: { ID: sportsMan.ID }, returning: true }
+              );
+
+              if (rowsUpdated[0] === 0) {
+                throw new Error("error update asignacion");
+              }
+            });
+          });
+        }
+      );
+
+      promises.push(exercisePromise);
+    });
+  });
+
+  // Esperar a que todas las promesas se resuelvan
+  await Promise.all(promises);
 };
 
 module.exports = {
@@ -302,5 +341,6 @@ module.exports = {
   getAll_Unitsofmeasurements,
   CombineExercise,
   getGrupo,
-  updateSubGrupo
+  updateSubGrupo,
+  assignExercise,
 };
