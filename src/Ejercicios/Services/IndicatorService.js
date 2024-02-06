@@ -1,9 +1,9 @@
 const { v1 } = require("uuid");
 const {
   Indicadores,
-  Levels,
+  Levels: LevelsDb,
   SportsMan,
-  Ejercicios,
+  Ejercicios: EjerciciosDb,
   SubGrupos,
   Grupos,
 } = require("../../db.js");
@@ -39,16 +39,6 @@ const createIndicators = async (req, res) => {
               IndicadoreID: data.ID,
             });
           });
-
-          // esto sirve para la asignacion de ejercicios
-          // const rowsUpdated = await SportsMan.update(
-          // {HasIndicators : true},
-          // { where: {ID: data.SportsManID},
-          // returning: true})
-
-          // if (rowsUpdated[0] === 0){
-          //     throw new Error("error update");
-          // }
         })
         .catch((error) => {
           res.send({
@@ -74,26 +64,49 @@ const getIndicators = async (req, res) => {
   const { id } = req.query;
 
   try {
-    const result = await Indicadores.findAll({
-      where: { SportsManID: id },
-      include: [
-        {
-          model: Ejercicios,
-          include: [
-            {
-              model: SubGrupos,
-              include: [{ model: Grupos }],
-            },
-          ],
-        },
-        {
-          model: Levels,
-        },
-        {
-          model: SportsMan,
-        },
-      ],
+    let result = await SportsMan.findByPk(id, {
+   
+      include: {
+        model: EjerciciosDb,
+        attributes: [
+          "ID",
+          "Name",
+          "Abbreviation",
+          "Relationship",
+          "SubGrupoID",
+        ],
+        include: [
+          {
+            model: SubGrupos,
+            attributes: ["abreviatura", "GrupoID"],
+            include: [{ model: Grupos, attributes: ["Abbreviation"] }],
+          },
+          {
+            model: Indicadores,
+            attributes: [
+              "Abbreviation",
+              "AbsolutePercentage",
+              "CalificationLevel",
+              "Description",
+              "EjercicioID",
+              "ID",
+              "IndicatorsName",
+            ],
+            include: [
+              {
+                model: LevelsDb,
+                attributes: ["ID", "LevelName", "Description", "IndicadoreID"],
+              },
+              {
+                model: EjerciciosDb,
+              },
+            ],
+          },
+        ],
+      },
     });
+
+    result = result.toJSON();
 
     res.json({ item: result });
   } catch (error) {
