@@ -26,6 +26,7 @@ router.use("/Categoria", CategoriaRouter);
 router.use("/exercises", verificationToken, EjercicioRouter);
 router.use("/Tareas", verificationToken, TareasRouter);
 router.use("/subirImagen", verificationToken, subirImagenRoutes);
+router.use("/subirImagenRegistro", subirImagenRoutes);
 router.use("/Etapa",verificationToken, EtapaRouter);
 router.use("/indicators", IndicatorsRoutes);
 router.use("/Diciplinas",verificationToken, DiciplinaRouter);
