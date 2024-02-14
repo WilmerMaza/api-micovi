@@ -31,7 +31,7 @@ const createIndicators = async (req, res) => {
       })
         .then(async (data) => {
           levelList.forEach(async (item) => {
-            await Levels.create({
+            await LevelsDb.create({
               ID: v1(),
               LevelName: item.name,
               LevelNumber: item.number,

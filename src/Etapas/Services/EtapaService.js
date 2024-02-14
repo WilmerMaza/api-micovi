@@ -45,35 +45,37 @@ class EtapaService {
 
   async assingEtapa(request) {
     try {
-      const { MicrocicloID, MacrocicloID, EtapaID } = request.body;
+      const listEtapas = request.body;
+      listEtapas.forEach(async (element) => {
+        const { MicrocicloID, MacrocicloID, EtapaID } = element;
 
-      const microcicloData = await this.getMicrociclo(
-        MicrocicloID,
-        MacrocicloID
-      );
-
-      if (microcicloData) {
-        const etapaData = await this.getEtapaID(EtapaID);
-        const body = {
-          ...microcicloData,
-          EtapaID,
-          stages: etapaData.name,
-        };
-
-        const [rowsUpdated, [updatedmicrociclo]] = await Microciclos.update(
-          body,
-          {
-            where: { ID: MicrocicloID, MacrocicloID },
-            returning: true,
-          }
+        const microcicloData = await this.getMicrociclo(
+          MicrocicloID,
+          MacrocicloID
         );
+        if (microcicloData) {
+          const etapaData = await this.getEtapaID(EtapaID);
+          const body = {
+            ...microcicloData,
+            EtapaID,
+            stages: etapaData.name,
+          };
 
-        if (rowsUpdated[0] === 0) {
-          throw new Error("No se pudo actualizar el microciclo");
+          const [rowsUpdated, [updatedmicrociclo]] = await Microciclos.update(
+            body,
+            {
+              where: { ID: MicrocicloID, MacrocicloID },
+              returning: true,
+            }
+          );
+
+          if (rowsUpdated[0] === 0) {
+            throw new Error("No se pudo actualizar el microciclo");
+          }
+        } else {
+          throw new Error("No Existe Microciclo");
         }
-      } else {
-        throw new Error("No Existe Microciclo");
-      }
+      });
     } catch (error) {
       console.error("Error al Asignar las Etapas:", error);
       throw error;
@@ -107,17 +109,14 @@ class EtapaService {
           where: { ID },
           returning: true,
         }
-      )
+      );
 
       if (rowsUpdated[0] === 0) {
         throw new Error("No se pudo actualizar la etapa");
-      } 
-      
+      }
+    } catch (error) {
+      throw new Error("Error al actualizar:", error);
     }
-    catch(error) {
-      throw new Error('Error al actualizar:', error);
-    }
-
   }
 }
 
