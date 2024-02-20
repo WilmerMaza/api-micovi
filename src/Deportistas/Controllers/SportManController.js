@@ -87,4 +87,25 @@ router.post('/getHistorialCategory', verificationToken, async (req, res) => {
   }
 });
 
+router.post('/calificacion', verificationToken, async (req, res) => {
+  try {
+    await sportsManService.insertar_calificacion(req.body);
+    res.status(200).json({ Message: 'El Deportista fue calificado con exito' });
+
+  } catch (error) {
+    console.error("Error al calificar al deportista:", error);
+    res.status(500).json({ error: 'Error al calificar al deportista', Message: error.message });
+  }
+});
+
+router.get('/calificacion', verificationToken, async (req, res) => {
+  try {
+    const response = await sportsManService.get_calificacion(req);
+    res.json(response)
+  } catch (error) {
+    console.error("Error al obtener las calificaciones:", error);
+    res.status(500).json({ error: 'Error al obtener las calificaciones', Message: error.message });
+  }
+})
+
 module.exports = router;

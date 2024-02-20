@@ -3,7 +3,8 @@ const {
   HistorialCategorico,
   Categoria,
   Diciplinas,
-  SportsInstitutions
+  SportsInstitutions,
+  Calificacion
 } = require("../../db.js");
 const { v1 } = require("uuid");
 const { Op } = require("sequelize");
@@ -218,6 +219,38 @@ class SportsManService {
       console.error("Error al obtener el deportista:", error);
       throw error;
     }
+  }
+
+  async insertar_calificacion(body) {
+    const { minimo, maximo, promedio, sportmanId, ejercicioId } = body;
+    try {
+      await Calificacion.create({
+        ID: v1(),
+        minimo,
+        maximo,
+        promedio,
+        SportsManID: sportmanId,
+        EjercicioID: ejercicioId
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async get_calificacion(req){
+    const { SportsManID, EjercicioID } = req.query;
+
+    try {
+      const sportmanCalificacion = await Calificacion.findAll({
+        where: { SportsManID, EjercicioID },
+        order: [["createdAt", "DESC"]]
+      });
+      return sportmanCalificacion;
+
+    } catch (error) {
+      throw error;
+    }
+
   }
 
   async getHistorialCategory(idCsportsman) {
