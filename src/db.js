@@ -91,6 +91,7 @@ const {
   Tareas,
   Etapa,
   Diciplinas,
+  Calificacion
 } = sequelize.models;
 
 // Aca vendrian las relaciones
@@ -183,6 +184,12 @@ PlanAnual.belongsTo(Diciplinas);
 
 Ejercicios.belongsToMany(SportsMan, { through: "SportmanExercies" });
 SportsMan.belongsToMany(Ejercicios, { through: "SportmanExercies" });
+
+Calificacion.belongsTo(SportsMan);
+SportsMan.hasMany(Calificacion);
+
+Calificacion.belongsTo(Ejercicios);
+Ejercicios.hasMany(Calificacion)
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
