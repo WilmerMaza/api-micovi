@@ -243,7 +243,7 @@ class SportsManService {
     try {
       const sportmanCalificacion = await Calificacion.findAll({
         where: { SportsManID, EjercicioID },
-        order: [["createdAt", "DESC"]]
+        order: [["createdAt", "ASC"]]
       });
       return sportmanCalificacion;
 

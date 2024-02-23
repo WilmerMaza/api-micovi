@@ -92,10 +92,12 @@ const getIndicators = async (req, res) => {
               "ID",
               "IndicatorsName",
             ],
+            order: [["createdAt", "ASC"]],
             include: [
               {
                 model: LevelsDb,
                 attributes: ["ID", "LevelName", "Description", "IndicadoreID"],
+                order: [["createdAt", "ASC"]]
               },
               {
                 model: EjerciciosDb,
