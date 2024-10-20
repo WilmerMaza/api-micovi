@@ -309,7 +309,7 @@ const assignExercise = async (req, res) => {
     exercise.forEach((itemExercise) => {
       const exercisePromise = Ejercicios.findByPk(itemExercise.ID).then(
         (ejercicio) => {
-          return SportsMan.findByPk(itemSport.ID).then((sportsMan) => {
+          return SportsMan.findByPk(itemSport).then((sportsMan) => {
             return ejercicio.addSportsMan(sportsMan).then(async () => {
               const rowsUpdated = await SportsMan.update(
                 { HasIndicators: true },
