@@ -53,7 +53,6 @@ const createPayment = async (req, res) => {
         })
     }
     catch(error){
-        
         res.status(400).send('Ocurrio un error al tratar de generar tu compra')
     }
 
