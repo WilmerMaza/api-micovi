@@ -5,22 +5,16 @@ class CategoriaService {
   async createCategoria(data) {
     try {
       const {
-        body: { name },
         user: {
           dataUser: { ID },
         },
       } = data;
 
-      const res = await this.getCategoria(name);
-
-      if (!res) {
         data.body.ID = v1();
         const bodyRequest = data.body;
         bodyRequest.SportsInstitutionID = ID;
         await Categoria.create(bodyRequest);
-      } else {
-        throw new Error("La Categoria ya ha sido registrado anteriormente");
-      }
+
     } catch (error) {
       console.error("Error al crear el registro:", error);
       throw error;
