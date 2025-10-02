@@ -116,4 +116,16 @@ router.post("/refresh", (req, res) => {
 });
 
 
+router.post('/logout', (req, res) => {
+  res.clearCookie('access_token', {
+    httpOnly: true,
+    secure: true,    // true en producción (HTTPS)
+    sameSite: 'strict',
+    path: '/',       // usa el mismo path con el que la creaste
+  });
+  res.status(200).json({ message: 'Logout exitoso' });
+});
+
+
+
 module.exports = router;
