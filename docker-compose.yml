@@ -47,7 +47,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: "wilmermaza10@gmail.com"
       PGADMIN_DEFAULT_PASSWORD: "W1lm3rM4z4123@***"
     ports:
-      - '80:80'
+      - '80:8080'
     depends_on:
       - postgres
     networks:
