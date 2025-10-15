@@ -37,6 +37,7 @@ services:
       PORT: 3000
       ACCESS_SECRET: aaf29149afb7331928ff260405a69489d53d9f07320bec781a4aa6241a2a60f5786383c9f2cfb263c7d6393befd9870c10c3dad57df321e7dd957e412328626f
       REFRESH_SECRET: f5f479f037fd85bd68de22b66e9c4cd0083caa9463364de372fa926521e54a606081cbee0bca93b8631d19d2f07d3e42a5baa5a3824c0e5d3d52e338c798fd46
+      CORS_ORIGIN: https://micoviv2.web.app   
     networks:
       - micovi
 
