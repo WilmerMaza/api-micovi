@@ -84,7 +84,10 @@ router.get("/me", (req, res) => {
 
   try {
     const payload = jwt.verify(token, ACCESS_SECRET);
-    res.json({ user: payload });
+
+    const { dataUser } = payload;
+
+    res.json({ ...dataUser });
   } catch (e) {
     return res.status(401).json({ message: "Token inválido o expirado" });
   }
@@ -99,7 +102,11 @@ router.post("/refresh", (req, res) => {
     const payload = jwt.verify(token, REFRESH_SECRET);
 
     // Nuevo access
-    const newAccess = jwt.sign({ id: payload.id, email: payload.email }, ACCESS_SECRET, { expiresIn: "15m" });
+    const newAccess = jwt.sign(
+      { id: payload.id, email: payload.email },
+      ACCESS_SECRET,
+      { expiresIn: "15m" }
+    );
 
     res.cookie("access_token", newAccess, {
       httpOnly: true,
@@ -115,5 +122,14 @@ router.post("/refresh", (req, res) => {
   }
 });
 
+router.post("/logout", (req, res) => {
+  res.clearCookie("access_token", {
+    httpOnly: true,
+    secure: true, // true en producción (HTTPS)
+    sameSite: "strict",
+    path: "/", // usa el mismo path con el que la creaste
+  });
+  res.status(200).json({ message: "Logout exitoso" });
+});
 
 module.exports = router;
