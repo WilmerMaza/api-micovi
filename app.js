@@ -12,7 +12,9 @@ const { conn } = require("./src/db.js");
 const server = express();
 server.name = "API";
 
-const ORIGIN = process.env.CORS_ORIGIN || "http://localhost:4200";
+const allowedOrigins = process.env.ORIGINS
+  ? process.env.ORIGINS.split(",").map((o) => o.trim())
+  : [];
 const isProd = process.env.NODE_ENV === "production";
 
 // ---- Middlewares base
@@ -24,8 +26,17 @@ server.use(cookieParser());
 // ---- CORS correctamente configurado para credenciales
 server.use(
   cors({
-    origin: ORIGIN, // 👈 origen exacto, no '*'
-    credentials: true, // 👈 permite cookies
+    origin: function (origin, callback) {
+      // ⚠️ Si no hay origin (por ejemplo, en Postman o curl), permite
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("CORS no permitido para este dominio"));
+      }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "X-XSRF-TOKEN", "Authorization"],
   })
