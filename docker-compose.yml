@@ -23,6 +23,7 @@ services:
       PORT: 3000
       ACCESS_SECRET: ${ACCESS_SECRET}
       REFRESH_SECRET: ${REFRESH_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN}
       NODE_ENV: production
     ports:
       - "127.0.0.1:3000:3000"
